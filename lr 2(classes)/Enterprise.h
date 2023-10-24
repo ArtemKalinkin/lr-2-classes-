@@ -12,13 +12,13 @@ private:
     char* dateOfFoundationEnterprise;
     char* industryOfEnterprise;
 public:
-    void setNameOfEnterprises(char* name);
+    void setNameOfEnterprise(char* name);
     void setcitySubjectCountry(char* address);
     void setTurnoverPerYear(unsigned long turnover);
     void setNetProfitOfEnterprise(long profit);
     void setDateOfFoundationEnterprise(char* date);
     void setIndustryOfEnterprise(char* industry);
-    char * getNameOfEnterprises();
+    char * getNameOfEnterprise();
     char * getcitySubjectCountry();
     unsigned long getTurnoverPerYear();
     long getNetProfitOfEnterprise();
@@ -27,7 +27,6 @@ public:
     Enterprise();
     Enterprise(char* name);
     Enterprise(char* name, char* address, unsigned long turnover, long profit, char* date, char* industry);
-    ~Enterprise();
     void inputEnterpriseFromConsole();
     void enterpriseTableHeader();
     void outputEnterpriseToConsole(int number);

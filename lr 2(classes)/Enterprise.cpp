@@ -1,7 +1,7 @@
 #include "Enterprise.h"
 
 
-void Enterprise::setNameOfEnterprises(char* name)
+void Enterprise::setNameOfEnterprise(char* name)
 {
 	nameOfEnterprise = new char[strlen(name)];
 	strcpy(nameOfEnterprise, name);
@@ -35,7 +35,7 @@ void Enterprise::setIndustryOfEnterprise(char* industry)
 	strcpy(industryOfEnterprise, industry);
 }
 
-char* Enterprise::getNameOfEnterprises()
+char* Enterprise::getNameOfEnterprise()
 {
 	return nameOfEnterprise;
 }
@@ -100,22 +100,12 @@ Enterprise::Enterprise(char* name, char* address, unsigned long turnover, long p
 	strcpy(industryOfEnterprise, industry);
 }
 
-Enterprise::~Enterprise()
-{
-	if (nameOfEnterprise != NULL)
-		delete[] nameOfEnterprise;
-	if (citySubjectCountry != NULL)
-		delete[] citySubjectCountry;
-	if (dateOfFoundationEnterprise != NULL)
-		delete[] dateOfFoundationEnterprise;
-	if (industryOfEnterprise != NULL)
-		delete[] industryOfEnterprise;
-}
 
 void Enterprise::inputEnterpriseFromConsole()
 {
 	nameOfEnterprise = new char[LENNAME];
 	dateOfFoundationEnterprise = new char[20];
+	industryOfEnterprise = new char[70];
 	puts("\nВВОД ПРЕДПРИЯТИЯ\n");
 	do {
 		puts("Введите название предприятия:");
@@ -130,7 +120,7 @@ void Enterprise::inputEnterpriseFromConsole()
 	} while (checkingForCorrectnessOfDateEntry(dateOfFoundationEnterprise));
 	do {
 		puts("Введите отрасль предприятия:");
-		fgets(industryOfEnterprise, LENNAME, stdin);
+		fgets(industryOfEnterprise, 70, stdin);
 	} while (protectionAgainstIncorrectTextInput(industryOfEnterprise));
 	deletingNewlineTransitionCharacter(industryOfEnterprise);
 	puts("Введите оборот за год:");
@@ -148,17 +138,17 @@ void Enterprise::inputEnterpriseFromConsole()
 
 void Enterprise::enterpriseTableHeader()
 {
-	printf("*********************************************************************************************************************************************************************\n");
-	printf("* Номер *       Предприятие       *                  Местоположение                 *   Оборот за год   *    Прибыль    *          Отрасль         * Дата основания *\n");
-	printf("*********************************************************************************************************************************************************************\n");
+	printf("*****************************************************************************************************************************************************************************\n");
+	printf("* Номер *       Предприятие       *                  Местоположение                 *   Оборот за год   *    Прибыль    *              Отрасль             * Дата основания *\n");
+	printf("*****************************************************************************************************************************************************************************\n");
 }
 
 void Enterprise::outputEnterpriseToConsole(int number)
 {
 	printf("* %-5d * %-23s * %-47s * ", number + 1, nameOfEnterprise, citySubjectCountry);
 	printf("%-17lu * %-13ld * ", turnoverPerYear, netProfitOfEnterprise);
-	printf("%-24s * %-14s *\n", industryOfEnterprise, dateOfFoundationEnterprise);
-	printf("*********************************************************************************************************************************************************************\n");
+	printf("%-32s * %-14s *\n", industryOfEnterprise, dateOfFoundationEnterprise);
+	printf("*****************************************************************************************************************************************************************************\n");
 }
 
 

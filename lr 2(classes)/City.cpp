@@ -67,11 +67,7 @@ City::City(char* name, int popilation, int number, Enterprise enterprises[])
 		listOfEnterprises[i] = enterprises[i];
 }
 
-City::~City()
-{
-	if (nameOfCity != NULL)
-		delete[] nameOfCity;
-}
+
 
 void City::inputCityFromConsole()
 {
@@ -106,10 +102,10 @@ void City::outputCityToConsole(int number)
 {
 	int i;
 	printf("* %-5d * %-18s * %-22d * %-9d * ", number + 1, nameOfCity, numberOfEnterprises, populationOfCity);
-	printf("%-36s *\n", listOfEnterprises[0].getNameOfEnterprises());
+	printf("%-36s *\n", listOfEnterprises[0].getNameOfEnterprise());
 	i = 1;
-	while ((listOfEnterprises[i].getNameOfEnterprises() != NULL) && (i < MAXENTERPRISES)) {
-		printf("*       *                    *                        *           * %-36s *\n", listOfEnterprises[i].getNameOfEnterprises());
+	while ((listOfEnterprises[i].getNameOfEnterprise() != NULL) && (i < MAXENTERPRISES)) {
+		printf("*       *                    *                        *           * %-36s *\n", listOfEnterprises[i].getNameOfEnterprise());
 		i++;
 	}
 	printf("**********************************************************************************************************\n");

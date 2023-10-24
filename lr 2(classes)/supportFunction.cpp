@@ -56,3 +56,11 @@ int checkingForCorrectnessOfDateEntry(char* date) {
 	date[10] = '\0';
 	return flag;
 }
+
+int calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(unsigned long a, unsigned long b)
+{
+	int result;
+	result = (a - b) / b * 100;
+	return result;
+}
+

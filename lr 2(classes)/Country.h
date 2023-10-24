@@ -2,7 +2,7 @@
 #include "Subject.h"
 #include "supportFunction.h"
 
-#define MAXSUBJECTS 85
+#define MAXSUBJECTS 5
 
 class Country
 {
@@ -16,7 +16,6 @@ private:
     unsigned long expensesOfCountry;
     long budgetDeficitOrSurplusOfCountry;
     Subject listOfSubjects[MAXSUBJECTS];
-    int calculatingProfitsFromEnterprises();
 public:
     void setNameOfCountry(char *name);
     void setNumberOfSubjects(int number);
@@ -26,7 +25,7 @@ public:
     void setIncomeOfCountry(unsigned long income);
     void setExpensesOfCountry(unsigned long expenses);
     void setListOfSubjects(Subject subjects[]);
-    char *getNameOfCountry();
+    char* getNameOfCountry();
     int getNumberOfSubjects();
     unsigned long getNetProfitCountryEnterprises();
     int getPopulationOfCountry();
@@ -38,6 +37,11 @@ public:
     Country();
     Country(char* name);
     Country(char* name, int number, int population, int square, unsigned long income, unsigned long expenses, Subject subjects[]);
-    ~Country();
+    void inputCountryFromConsole();
+    void countryTableHeader();
+    void outputCountryToConsole(int number);
+    int calculatingProfitsFromEnterprises();
+    int choosingSubject();
+    int comparisonOfTwoCountries(Country* secondCountry);
 };
 

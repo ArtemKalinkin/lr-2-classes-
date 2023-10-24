@@ -71,10 +71,66 @@ Country* Сontinent::getListOfCountries()
 	}
 }
 
-Сontinent::~Сontinent()
+
+void Сontinent::inputСontinentFromConsole()
 {
-	if (nameOfContinent != NULL)
-		delete[] nameOfContinent;
+	nameOfContinent = new char[LENNAME];
+	puts("ВВОД КОНТИНЕНТА\n");
+	do {
+		puts("Введите название континента:");
+		fgets(nameOfContinent, LENNAME, stdin);
+	} while (protectionAgainstIncorrectTextInput(nameOfContinent));
+	deletingNewlineTransitionCharacter(nameOfContinent);
+	puts("Введите количество стран на континенте:");
+	while (scanf("%d", &numberOfCountries) != 1) {
+		while (getchar() != '\n');
+		printf("\nОшибка ввода!\nВведите количество стран на континенте:\n");
+	}
+	puts("Введите площадь континента (в кв. км):");
+	while (scanf("%d", &squareOfContinent) != 1) {
+		while (getchar() != '\n');
+		printf("\nОшибка ввода!\nВведите площадь континента (в кв. км):\n");
+	}
+	while (getchar() != '\n');
+}
+
+void Сontinent::continentTableHeader()
+{
+	printf("*******************************************************************************************************\n");
+	printf("* Номер *     Континент      * Количество стран * Площадь континента *          Список стран          *\n");
+	printf("*******************************************************************************************************\n");
+}
+
+void Сontinent::outputContinentToConsole(int number)
+{
+	int i;
+	printf("* %-5d * %-18s * %-16d * %-18d * ", number + 1, nameOfContinent, numberOfCountries, squareOfContinent);
+	printf("%-30s *\n", listOfCountries[0].getNameOfCountry());
+	i = 1;
+	while ((listOfCountries[i].getNameOfCountry() != NULL) && (i < MAXCOUNTRIES)) {
+		printf("*       *                    *                  *                    * %-30s *\n", listOfCountries[i].getNameOfCountry());
+		i++;
+	}
+	printf("*******************************************************************************************************\n");
+}
+
+int Сontinent::choosingCountry()
+{
+	int i, n, number;
+	char character;
+	listOfCountries[0].countryTableHeader();
+	i = 0;
+	while (listOfCountries[i].getNameOfCountry() != NULL) {
+		listOfCountries[i].outputCountryToConsole(i);
+		i++;
+	}
+	n = i + 1;
+	puts("\nВыберите страну\n");
+	do {
+		character = _getch();
+		number = character - '0';
+	} while ((number < 1) || (number > n));
+	return number - 1;
 }
 
 

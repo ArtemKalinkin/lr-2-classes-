@@ -2,7 +2,7 @@
 #include "Country.h"
 #include "supportFunction.h"
 
-#define MAXCOUNTRIES 99
+#define MAXCOUNTRIES 5
 
 class —ontinent
 {
@@ -23,6 +23,11 @@ public:
     —ontinent();
     —ontinent(char *name);
     —ontinent(char* name, int number, int square, Country countries[]);
-    ~—ontinent();
+    void input—ontinentFromConsole();
+    void continentTableHeader();
+    void outputContinentToConsole(int number);
+    int choosingCountry();
+
+
 };
 

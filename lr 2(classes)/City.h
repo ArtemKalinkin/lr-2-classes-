@@ -2,7 +2,7 @@
 #include "Enterprise.h"
 #include "supportFunction.h"
 
-#define MAXENTERPRISES 100
+#define MAXENTERPRISES 5
 
 class City
 {
@@ -23,7 +23,6 @@ public:
     City();
     City(char* name);
     City(char* name, int popilation, int number, Enterprise enterprises[]);
-    ~City();
     void inputCityFromConsole();
     void cityTableHeader();
     void outputCityToConsole(int number);

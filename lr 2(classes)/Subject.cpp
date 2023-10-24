@@ -84,11 +84,7 @@ Subject::Subject(char* name, int number, int population, int square, City cities
 	}
 }
 
-Subject::~Subject()
-{
-	if (nameOfSubject != NULL)
-		delete[] nameOfSubject;
-}
+
 
 void Subject::inputSubjectFromConsole()
 {

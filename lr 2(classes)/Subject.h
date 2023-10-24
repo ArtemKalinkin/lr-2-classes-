@@ -2,7 +2,7 @@
 #include "City.h"
 #include "supportFunction.h"
 
-#define MAXCITIES 100
+#define MAXCITIES 5
 
 class Subject
 {
@@ -26,7 +26,6 @@ public:
     Subject();
     Subject(char* name);
     Subject(char* name, int number, int population, int square, City cities[]);
-    ~Subject();
     void inputSubjectFromConsole();
     void subjectTableHeader();
     void outputSubjectToConsole(int number);
