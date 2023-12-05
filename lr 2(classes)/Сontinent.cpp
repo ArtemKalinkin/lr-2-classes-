@@ -1,22 +1,23 @@
 #include "Ñontinent.h"
 
-void Ñontinent::setNameOfContinent(char* name)
+unsigned Continent::totalContinents = 0;
+
+void Continent::setName(string name)
 {
-	nameOfContinent = new char[strlen(name)];
-	strcpy(nameOfContinent, name);
+	this->name = name;
 }
 
-void Ñontinent::setNumberOfCountries(int number)
+void Continent::setNumberOfCountries(int number)
 {
 	numberOfCountries = number;
 }
 
-void Ñontinent::setSquareOfContinent(int square)
+void Continent::setSquare(int square)
 {
-	squareOfContinent = square;
+	this->square = square;
 }
 
-void Ñontinent::setListOfCountries(Country countries[])
+void Continent::setListOfCountries(Country countries[])
 {
 	for (int i = 0; i < MAXCOUNTRIES; i++)
 	{
@@ -24,47 +25,44 @@ void Ñontinent::setListOfCountries(Country countries[])
 	}
 }
 
-char* Ñontinent::getNameOfContinent()
+string Continent::getName()
 {
-	return nameOfContinent;
+	return name;
 }
 
-int Ñontinent::getNumberOfCountries()
+int Continent::getNumberOfCountries()
 {
 	return numberOfCountries;
 }
 
-int Ñontinent::getSquareOfContinent()
+int Continent::getSquare()
 {
-	return squareOfContinent;
+	return square;
 }
 
-Country* Ñontinent::getListOfCountries()
+Country* Continent::getListOfCountries()
 {
 	return listOfCountries;
 }
 
-Ñontinent::Ñontinent()
+Continent::Continent()
 {
-	nameOfContinent = NULL;
 	numberOfCountries = 0;
-	squareOfContinent = 0;
+	square = 0;
 }
 
-Ñontinent::Ñontinent(char* name)
+Continent::Continent(string name)
 {
-	nameOfContinent = new char[strlen(name)];
-	strcpy(nameOfContinent, name);
+	this->name = name;
 	numberOfCountries = 0;
-	squareOfContinent = 0;
+	square = 0;
 }
 
-Ñontinent::Ñontinent(char* name, int number, int square, Country countries[])
+Continent::Continent(string name, int number, int square, Country countries[])
 {
-	nameOfContinent = new char[strlen(name)];
-	strcpy(nameOfContinent, name);
+	this->name = name;
 	numberOfCountries = number;
-	squareOfContinent = square;
+	this->square = square;
 	for (int i = 0; i < MAXCOUNTRIES; i++)
 	{
 		listOfCountries[i] = countries[i];
@@ -72,65 +70,81 @@ Country* Ñontinent::getListOfCountries()
 }
 
 
-void Ñontinent::inputÑontinentFromConsole()
+void Continent::inputÑontinentFromConsole()
 {
-	nameOfContinent = new char[LENNAME];
+	name = new char[LENNAME];
 	puts("ÂÂÎÄ ÊÎÍÒÈÍÅÍÒÀ\n");
 	do {
-		puts("Ââåäèòå íàçâàíèå êîíòèíåíòà:");
-		fgets(nameOfContinent, LENNAME, stdin);
-	} while (protectionAgainstIncorrectTextInput(nameOfContinent));
-	deletingNewlineTransitionCharacter(nameOfContinent);
-	puts("Ââåäèòå êîëè÷åñòâî ñòðàí íà êîíòèíåíòå:");
+		cout << "Ââåäèòå íàçâàíèå êîíòèíåíòà:" << endl;
+		getline(cin, name);
+	} while (protectionAgainstIncorrectTextInput(name));
+	cout << "Ââåäèòå êîëè÷åñòâî ñòðàí íà êîíòèíåíòå:" << endl;
 	while (scanf("%d", &numberOfCountries) != 1) {
 		while (getchar() != '\n');
-		printf("\nÎøèáêà ââîäà!\nÂâåäèòå êîëè÷åñòâî ñòðàí íà êîíòèíåíòå:\n");
+		cout << "\nÎøèáêà ââîäà!\nÂâåäèòå êîëè÷åñòâî ñòðàí íà êîíòèíåíòå:\n";
 	}
-	puts("Ââåäèòå ïëîùàäü êîíòèíåíòà (â êâ. êì):");
-	while (scanf("%d", &squareOfContinent) != 1) {
+	cout << "Ââåäèòå ïëîùàäü êîíòèíåíòà (â êâ. êì):" << endl;
+	while (scanf("%d", &square) != 1) {
 		while (getchar() != '\n');
-		printf("\nÎøèáêà ââîäà!\nÂâåäèòå ïëîùàäü êîíòèíåíòà (â êâ. êì):\n");
+		cout << "\nÎøèáêà ââîäà!\nÂâåäèòå ïëîùàäü êîíòèíåíòà (â êâ. êì):\n";
 	}
 	while (getchar() != '\n');
 }
 
-void Ñontinent::continentTableHeader()
+void Continent::continentTableHeader()
 {
-	printf("*******************************************************************************************************\n");
-	printf("* Íîìåð *     Êîíòèíåíò      * Êîëè÷åñòâî ñòðàí * Ïëîùàäü êîíòèíåíòà *          Ñïèñîê ñòðàí          *\n");
-	printf("*******************************************************************************************************\n");
+	cout << "*******************************************************************************************************\n";
+	cout << "* Íîìåð *     Êîíòèíåíò      * Êîëè÷åñòâî ñòðàí * Ïëîùàäü êîíòèíåíòà *          Ñïèñîê ñòðàí          *\n";
+	cout << "*******************************************************************************************************\n";
 }
 
-void Ñontinent::outputContinentToConsole(int number)
+void Continent::outputContinentToConsole(int number)
 {
 	int i;
-	printf("* %-5d * %-18s * %-16d * %-18d * ", number + 1, nameOfContinent, numberOfCountries, squareOfContinent);
-	printf("%-30s *\n", listOfCountries[0].getNameOfCountry());
+	cout << "* " << setw(5) << left << number + 1 << " * ";
+	cout << setw(18) << left << name << " * ";
+	cout << setw(16) << left << numberOfCountries << " * ";
+	cout << setw(18) << left << square << " * ";
+	cout << setw(30) << left << listOfCountries[0].getName() << " *" << endl;
 	i = 1;
-	while ((listOfCountries[i].getNameOfCountry() != NULL) && (i < MAXCOUNTRIES)) {
-		printf("*       *                    *                  *                    * %-30s *\n", listOfCountries[i].getNameOfCountry());
+	while ((!listOfCountries[i].getName().empty()) && (i < MAXCOUNTRIES)) {
+		cout << "*       *                    *                  *                    * ";
+		cout << setw(30) << left << listOfCountries[i].getName() << " *" << endl;
 		i++;
 	}
-	printf("*******************************************************************************************************\n");
+	cout <<"*******************************************************************************************************\n";
 }
 
-int Ñontinent::choosingCountry()
+Country& Continent::choosingCountry()
 {
 	int i, n, number;
 	char character;
 	listOfCountries[0].countryTableHeader();
 	i = 0;
-	while (listOfCountries[i].getNameOfCountry() != NULL) {
+	while (!listOfCountries[i].getName().empty()) {
 		listOfCountries[i].outputCountryToConsole(i);
 		i++;
 	}
 	n = i + 1;
-	puts("\nÂûáåðèòå ñòðàíó\n");
+	cout << "\n\nÂûáåðèòå ñòðàíó\n" << endl;
 	do {
 		character = _getch();
 		number = character - '0';
 	} while ((number < 1) || (number > n));
-	return number - 1;
+	return listOfCountries[number - 1];
 }
+
+
+void Continent::incrementTotalContinents()
+{
+	totalContinents++;
+}
+
+void Continent::printTotalContinents()
+{
+	cout << "Âû âíåñëè â ñïèñîê " << totalContinents << " èç 6 ñóùåñòâóþùèõ êîíòèíåòîâ" << endl;
+}
+
+
 
 

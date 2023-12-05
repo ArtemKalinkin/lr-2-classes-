@@ -1,10 +1,11 @@
 #include "Country.h"
 
+unsigned Country::totalCountries = 0;
 
-void Country::setNameOfCountry(char* name)
+
+void Country::setName(string name)
 {
-	nameOfCountry = new char(strlen(name));
-	strcpy(nameOfCountry, name);
+	this->name = name;
 }
 
 void Country::setNumberOfSubjects(int number)
@@ -12,31 +13,31 @@ void Country::setNumberOfSubjects(int number)
 	numberOfSubjects = number;
 }
 
-void Country::setNetProfitCountryEnterprises(unsigned long profit)
+void Country::setNetProfitCountryFromCompanies(unsigned long profit)
 {
-	netProfitCountryEnterprises = profit;
+	netProfitFromCompanies = profit;
 }
 
-void Country::setPopulationOfCountry(int population)
+void Country::setPopulation(int population)
 {
-	populationOfCountry = population;
+	this->population = population;
 }
 
-void Country::setSquareOfCountry(int square)
+void Country::setSquare(int square)
 {
-	squareOfCountry = square;
+	this->square = square;
 }
 
-void Country::setIncomeOfCountry(unsigned long income)
+void Country::setIncome(unsigned long income)
 {
-	incomeOfCountry = income;
-	budgetDeficitOrSurplusOfCountry = incomeOfCountry - expensesOfCountry;
+	this->income = income;
+	budgetDeficitOrSurplus = income - expenses;
 }
 
-void Country::setExpensesOfCountry(unsigned long expenses)
+void Country::setExpenses(unsigned long expenses)
 {
-	expensesOfCountry = expenses;
-	budgetDeficitOrSurplusOfCountry = incomeOfCountry - expensesOfCountry;
+	this->expenses = expenses;
+	budgetDeficitOrSurplus = income - expenses;
 }
 
 void Country::setListOfSubjects(Subject subjects[])
@@ -47,9 +48,9 @@ void Country::setListOfSubjects(Subject subjects[])
 	}
 }
 
-char* Country::getNameOfCountry()
+string Country::getName()
 {
-	return nameOfCountry;
+	return name;
 }
 
 int Country::getNumberOfSubjects()
@@ -57,34 +58,34 @@ int Country::getNumberOfSubjects()
 	return numberOfSubjects;
 }
 
-unsigned long Country::getNetProfitCountryEnterprises()
+unsigned long Country::getNetProfitCountryFromCompanies()
 {
-	return netProfitCountryEnterprises;
+	return netProfitFromCompanies;
 }
 
-int Country::getPopulationOfCountry()
+int Country::getPopulation()
 {
-	return populationOfCountry;
+	return population;
 }
 
-int Country::getSquareOfCountry()
+int Country::getSquare()
 {
-	return squareOfCountry;
+	return square;
 }
 
-unsigned long Country::getIncomeOfCountry()
+unsigned long Country::getIncome()
 {
-	return incomeOfCountry;
+	return income;
 }
 
-unsigned long Country::getExpensesOfCountry()
+unsigned long Country::getExpenses()
 {
-	return expensesOfCountry;
+	return expenses;
 }
 
-long Country::getBudgetDeficitOrSurplusOfCountry()
+long Country::getBudgetDeficitOrSurplus()
 {
-	return budgetDeficitOrSurplusOfCountry;
+	return budgetDeficitOrSurplus;
 }
 
 Subject* Country::getListOfSubjects()
@@ -94,41 +95,38 @@ Subject* Country::getListOfSubjects()
 
 Country::Country()
 {
-	nameOfCountry = NULL;
 	numberOfSubjects = 0;
-	netProfitCountryEnterprises = 0;
-	populationOfCountry = 0;
-	squareOfCountry = 0;
-	incomeOfCountry = 0;
-	expensesOfCountry = 0;
-	budgetDeficitOrSurplusOfCountry = 0;
+	netProfitFromCompanies = 0;
+	population = 0;
+	square = 0;
+	income = 0;
+	expenses = 0;
+	budgetDeficitOrSurplus = 0;
 }
 
-Country::Country(char* name)
+Country::Country(string name)
 {
-	nameOfCountry = new char(strlen(name));
-	strcpy(nameOfCountry, name);
+	this->name = name;
 	numberOfSubjects = 0;
-	netProfitCountryEnterprises = 0;
-	populationOfCountry = 0;
-	squareOfCountry = 0;
-	incomeOfCountry = 0;
-	expensesOfCountry = 0;
-	budgetDeficitOrSurplusOfCountry = 0;
+	netProfitFromCompanies = 0;
+	population = 0;
+	square = 0;
+	income = 0;
+	expenses = 0;
+	budgetDeficitOrSurplus = 0;
 }
 
 
-Country::Country(char* name, int number, int population, int square, unsigned long income, unsigned long expenses, Subject subjects[])
+Country::Country(string name, int number, int population, int square, unsigned long income, unsigned long expenses, Subject subjects[])
 {
-	nameOfCountry = new char(strlen(name));
-	strcpy(nameOfCountry, name);
-	numberOfSubjects = number;
-	netProfitCountryEnterprises = calculatingProfitsFromEnterprises();
-	populationOfCountry = population;
-	squareOfCountry = square;
-	incomeOfCountry = income;
-	expensesOfCountry = expenses;
-	budgetDeficitOrSurplusOfCountry = income - expenses;
+	this->name = name;
+	this->numberOfSubjects = number;
+	this->netProfitFromCompanies = calculatingProfitsFromCompanies();
+	this->population = population;
+	this->square = square;
+	this->income = income;
+	this->expenses = expenses;
+	budgetDeficitOrSurplus = income - expenses;
 	for (int i = 0; i < MAXSUBJECTS; i++)
 	{
 		listOfSubjects[i] = subjects[i];
@@ -138,18 +136,18 @@ Country::Country(char* name, int number, int population, int square, unsigned lo
 
 
 
-int Country::calculatingProfitsFromEnterprises()
+int Country::calculatingProfitsFromCompanies()
 {
 	int i, j, k;
 	int numberOfProfit = 0;
 	City* city;
-	Enterprise* enterprise;
+	Company* company;
 	for (i = 0; i < MAXSUBJECTS; i++) {
 		city = listOfSubjects[i].getListOfCities();
 		for (j = 0; j < MAXCITIES; j++) {
-			enterprise = city[j].getListOfEnterprises();
-			for (k = 0; k < MAXENTERPRISES; k++) {
-				numberOfProfit += enterprise[k].getNetProfitOfEnterprise();
+			company = city[j].getListOfCompanies();
+			for (k = 0; k < MAXCOMPANIES; k++) {
+				numberOfProfit += company[k].getNetProfit();
 			}
 		}
 	}
@@ -158,81 +156,87 @@ int Country::calculatingProfitsFromEnterprises()
 
 void Country::inputCountryFromConsole()
 {
-	nameOfCountry = new char[LENNAME];
 	puts("\nВВОД СТРАНЫ\n");
 	do {
-		puts("Введите название страны:");
-		fgets(nameOfCountry, LENNAME, stdin);
-	} while (protectionAgainstIncorrectTextInput(nameOfCountry));
-	deletingNewlineTransitionCharacter(nameOfCountry);
-	puts("Введите население страны:");
-	while (scanf("%d", &populationOfCountry) != 1) {
+		cout << "Введите название страны:" << endl;
+		getline(cin, name);
+	} while (protectionAgainstIncorrectTextInput(name));
+	cout << "Введите население страны:" << endl;
+	while (scanf("%d", &population) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите население страны:\n");
+		cout << "\nОшибка ввода!\nВведите население страны:\n";
 	}
-	puts("Введите количество субъектов в стране:");
+	cout << "Введите количество субъектов в стране:" << endl;
 	while (scanf("%d", &numberOfSubjects) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите количество субъектов в стране:\n");
+		cout << "\nОшибка ввода!\nВведите количество субъектов в стране:\n";
 	}
-	puts("Введите площадь страны:");
-	while (scanf("%d", &squareOfCountry) != 1) {
+	cout << "Введите площадь страны:" << endl;
+	while (scanf("%d", &square) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите площадь страны:\n");
+		cout << "\nОшибка ввода!\nВведите площадь страны:\n";
 	}
-	puts("Введите доход страны:");
-	while (scanf("%d", &incomeOfCountry) != 1) {
+	cout << "Введите доход страны:" << endl;
+	while (scanf("%d", &income) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите доход страны:\n");
+		cout << "\nОшибка ввода!\nВведите доход страны:\n";
 	}
-	puts("Введите расходы страны:");
-	while (scanf("%d", &expensesOfCountry) != 1) {
+	cout << "Введите расходы страны:" << endl;
+	while (scanf("%d", &expenses) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите расходы страны:\n");
+		cout << "\nОшибка ввода!\nВведите расходы страны:\n";
 	}
 	while (getchar() != '\n');
-	budgetDeficitOrSurplusOfCountry = incomeOfCountry - expensesOfCountry;
+	budgetDeficitOrSurplus = income - expenses;
 }
 
 void Country::countryTableHeader()
 {
-	printf("**************************************************************************************************************************************************************************************************\n");
-	printf("* Номер *       Страна       * Количество субъектов * Площадь страны * Население * Прибыль предприятий *     Доходы     *     Расходы     * Профицит/дефицит бюджета *      Список субъектов     *\n");
-	printf("**************************************************************************************************************************************************************************************************\n");
+	cout << "**************************************************************************************************************************************************************************************************" << endl;
+	cout << "* Номер *       Страна       * Количество субъектов * Площадь страны * Население *  Прибыль компаний   *     Доходы     *     Расходы     * Профицит/дефицит бюджета *      Список субъектов     *" << endl;
+	cout << "**************************************************************************************************************************************************************************************************" << endl;
 }
 
 void Country::outputCountryToConsole(int number)
 {
 	int i;
-	printf("* %-5d * %-18s * %-20d * %-14d * ", number + 1, nameOfCountry, numberOfSubjects, squareOfCountry);
-	printf("%-9d * %-19d * %-14lu * ", populationOfCountry, netProfitCountryEnterprises, incomeOfCountry);
-	printf("%-15lu * %-24ld * ", expensesOfCountry, budgetDeficitOrSurplusOfCountry);
-	printf("%-25s *\n", listOfSubjects[0].getNameOfSubject());
+	cout << "* " << setw(5) << left << number + 1 << " * ";
+	cout << setw(18) << left << name << " * ";
+	cout << setw(20) << left << numberOfSubjects << " * ";
+	cout << setw(14) << left << square << " * ";
+	cout << setw(9) << left << population << " * ";
+	cout << setw(19) << left << netProfitFromCompanies << " * ";
+	cout << setw(14) << left << income << " * ";
+	cout << setw(15) << left << expenses << " * ";
+	cout << setw(24) << left << budgetDeficitOrSurplus << " * ";
+	cout << setw(25) << left << listOfSubjects[0].getName() << " *" << endl;
+
 	i = 1;
-	while ((listOfSubjects[i].getNameOfSubject() != NULL) && (i < MAXSUBJECTS)) {
-		printf("*       *                    *                      *                *           *                     *                *                 *                          * %-25s *\n", listOfSubjects[i].getNameOfSubject());
+	while ((!listOfSubjects[i].getName().empty()) && (i < MAXSUBJECTS)) {
+		cout << "*       *                    *                      *                *           *                     *                *                 *                          * ";
+		cout << setw(25) << left << listOfSubjects[i].getName() << " *" << endl;
 		i++;
 	}
-	printf("**************************************************************************************************************************************************************************************************\n");
+	cout <<"**************************************************************************************************************************************************************************************************" << endl;
 }
 
-int Country::choosingSubject()
+Subject& Country::choosingSubject()
 {
 	int i, n, number;
 	char character;
 	listOfSubjects[0].subjectTableHeader();
 	i = 0;
-	while (listOfSubjects[i].getNameOfSubject() != NULL) {
+	while (!listOfSubjects[i].getName().empty()) {
 		listOfSubjects[i].outputSubjectToConsole(i);
 		i++;
 	}
 	n = i + 1;
-	puts("\nВыберите субъект\n");
+	cout << "\nВыберите субъект\n" << endl;
 	do {
 		character = _getch();
 		number = character - '0';
 	} while ((number < 1) || (number > n));
-	return number - 1;
+	return listOfSubjects[number - 1];
 }
 
 int Country::comparisonOfTwoCountries(Country* secondCountry)
@@ -244,73 +248,84 @@ int Country::comparisonOfTwoCountries(Country* secondCountry)
 	int percentageOfExpenses;
 	int numberOne = 0, numberTwo = 0;
 	int value;
-	puts("\nПроцентное соотношение характеристик стран");
-	printf("%s     %s\n", nameOfCountry, secondCountry->nameOfCountry);
+	cout << "\nПроцентное соотношение характеристик стран" << endl;
+	cout << name << "  -  " << secondCountry->name << endl;
 	// Площадь
-	if (squareOfCountry > secondCountry->squareOfCountry) {
-		percentageOfSquare = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(squareOfCountry, secondCountry->squareOfCountry);
-		printf("Площадь страны - %s больше площади страны - %s на %d %%\n", nameOfCountry, secondCountry->nameOfCountry, percentageOfSquare);
+	if (this->square > secondCountry->square) {
+		percentageOfSquare = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(square, secondCountry->square);
+		cout << "Площадь страны - " << name << " больше площади страны -" << secondCountry->name << " на " << percentageOfSquare << "%" << endl;
 		numberOne++;
 	}
-	else if (squareOfCountry < secondCountry->squareOfCountry) {
-		percentageOfSquare = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->squareOfCountry, squareOfCountry);
-		printf("Площадь страны - %s больше площади страны - %s на %d %%\n", secondCountry->nameOfCountry, nameOfCountry, percentageOfSquare);
+	else if (this->square < secondCountry->square) {
+		percentageOfSquare = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->square, square);
+		cout << "Площадь страны - " << secondCountry->name << " больше площади страны -" << name << " на " << percentageOfSquare << "%" << endl;
 		numberTwo++;
 	}
 	else
-		printf("Площади стран равны\n");
+		cout << "Площади стран равны" << endl;
 	// Население
-	if (populationOfCountry > secondCountry->populationOfCountry) {
-		percentageOfPopulation = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(populationOfCountry, secondCountry->populationOfCountry);
-		printf("Населeние страны - %s больше населения страны - %s на %d %%\n", nameOfCountry, secondCountry->nameOfCountry, percentageOfPopulation);
+	if (this->population > secondCountry->population) {
+		percentageOfPopulation = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(population, secondCountry->population);
+		cout << "Населeние страны - " << name << " больше населения страны - " << secondCountry->name << " на " << percentageOfPopulation << "%" << endl;
 		numberOne++;
 	}
-	else  if (populationOfCountry < secondCountry->populationOfCountry) {
-		percentageOfPopulation = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->populationOfCountry, populationOfCountry);
-		printf("Населeние страны - %s больше населения страны - %s на %d %%\n", secondCountry->nameOfCountry, nameOfCountry, percentageOfPopulation);
+	else  if (this->population < secondCountry->population) {
+		percentageOfPopulation = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->population, population);
+		cout << "Населeние страны - " << secondCountry->name << " больше населения страны - " << name << " на " << percentageOfPopulation << "%" << endl;
 		numberTwo++;
 	}
 	else
-		printf("Население стран равно");
+		cout << "Население стран равно" << endl;
 	//Прибыль предприятий 
-	if (netProfitCountryEnterprises > secondCountry->netProfitCountryEnterprises) {
-		percentageOfProfits = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(netProfitCountryEnterprises, secondCountry->netProfitCountryEnterprises);
-		printf("Прибыль предприятий страны - %s больше прибыли предприятий страны - %s на %d %%\n", nameOfCountry, secondCountry->nameOfCountry, percentageOfProfits);
+	if (this->netProfitFromCompanies > secondCountry->netProfitFromCompanies) {
+		percentageOfProfits = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(netProfitFromCompanies, secondCountry->netProfitFromCompanies);
+		cout << "Прибыль компаний страны - " << this->name << " больше прибыли предприятий страны - " << secondCountry->name << " на " << percentageOfProfits << "%" << endl;
 		numberOne++;
 	}
-	else if (netProfitCountryEnterprises < secondCountry->netProfitCountryEnterprises) {
-		percentageOfProfits = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->netProfitCountryEnterprises, netProfitCountryEnterprises);
-		printf("Прибыль предприятий страны - %s больше прибыли предприятий страны - %s на %d %%\n", secondCountry->nameOfCountry, nameOfCountry, percentageOfProfits);
+	else if (this->netProfitFromCompanies < secondCountry->netProfitFromCompanies) {
+		percentageOfProfits = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->netProfitFromCompanies, netProfitFromCompanies);
+		cout << "Прибыль компаний страны - " << secondCountry->name << " больше прибыли предприятий страны - " << this->name << " на " << percentageOfProfits << "%" << endl;
 		numberTwo++;
 	}
-	else printf("Прибыли предприятий стран равны\n");
+	else cout << "Прибыли компаний стран равны" << endl;
 	// Доходы
-	if (incomeOfCountry > secondCountry->incomeOfCountry) {
-		percentageOfIncome = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(incomeOfCountry, secondCountry->incomeOfCountry);
-		printf("Доходы страны - %s больше доходов страны - %s на %d %%\n", nameOfCountry, secondCountry->nameOfCountry, percentageOfIncome);
+	if (this->income > secondCountry->income) {
+		percentageOfIncome = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(this->income, secondCountry->income);
+		cout << "Доходы страны - " << this->name << " больше доходов страны - " << secondCountry->name << " на " << percentageOfIncome << "%" << endl;
 		numberOne++;
 	}
-	else if (incomeOfCountry < secondCountry->incomeOfCountry) {
-		percentageOfIncome = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->incomeOfCountry, incomeOfCountry);
-		printf("Доходы страны - %s больше доходов страны - %s на %d %%\n", secondCountry->nameOfCountry, nameOfCountry, percentageOfIncome);
+	else if (this->income < secondCountry->income) {
+		percentageOfIncome = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->income, this->income);
+		cout << "Доходы страны - " << secondCountry->name << " больше доходов страны - " << name << " на " << percentageOfIncome << "%" << endl;
 		numberTwo++;
 	}
 	else
-		printf("Доходы стран равны\n");
+		cout << "Доходы стран равны" << endl;
 	// Расходы
-	if (expensesOfCountry > secondCountry->expensesOfCountry) {
-		percentageOfExpenses = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(expensesOfCountry, secondCountry->expensesOfCountry);
-		printf("Расходы страны - %s больше доходов страны - %s на %d %%\n", nameOfCountry, secondCountry->nameOfCountry, percentageOfExpenses);
+	if (this->expenses > secondCountry->expenses) {
+		percentageOfExpenses = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(expenses, secondCountry->expenses);
+		cout << "Расходы страны - "<< this->name << " больше доходов страны - " << secondCountry->name << " на " << percentageOfExpenses << "%" << endl;
 	}
-	else if (expensesOfCountry < secondCountry->expensesOfCountry) {
-		percentageOfExpenses = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->expensesOfCountry, expensesOfCountry);
-		printf("Расходы страны - %s больше расходов страны - %s на %d %%\n", secondCountry->nameOfCountry, nameOfCountry, percentageOfExpenses);
+	else if (this->expenses < secondCountry->expenses) {
+		percentageOfExpenses = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->expenses, expenses);
+		cout << "Расходы страны - " << secondCountry->name << " больше доходов страны - " << this->name << " на " << percentageOfExpenses << "%" << endl;
 	}
 	else
-		printf("Расходы стран равны\n");
+		cout << "Расходы стран равны" << endl;
 	if (numberOne > numberTwo)
 		value = 1;
 	else
 		value = 2;
 	return value;
+}
+
+
+void Country::incrementTotalCountries()
+{
+	totalCountries++;
+}
+
+void Country::printTotalCountries()
+{
+	cout << "Вы внесли в список " << totalCountries << " из 195 существующих стран" << endl;
 }

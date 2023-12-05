@@ -6,54 +6,56 @@
 
 
 
-int protectionAgainstIncorrectTextInput(char* line) {
-	int i, lineLength;
-	if (line[0] == '\n') {
-		puts("Ошибка! Данное поле не может быть пустым!");
+int protectionAgainstIncorrectTextInput(string line) {
+	string letters =
+		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	    "абвгдеёжщийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+	string digits = "1234567890";
+	if (line.empty()) {
+		cout << ("Ошибка! Данное поле не может быть пустым!") << endl;
 		return 1;
 	}
-	lineLength = strlen(line);
-	if (line[lineLength - 1] != '\n') {
-		puts("Ошибка! Количество символов превышает допустимое зачение!");
+	if (line.length() > LENNAME) {
+		cout << ("Ошибка! Количество символов превышает допустимое зачение!") << endl;
 		return 2;
 	}
-	for (i = 0; i < lineLength; i++)
-		if ((!ispunct(line[i])) && (!isspace(line[i])))
-			return 0;
-	puts("Ошибка! В данном поле должны присутвовать буквы или цифры!");
-	return 3;
+	if ((!line.find_first_of(letters)) && (!line.find_first_of(digits))) {
+		cout << "Ошибка! В данном поле должны присутвовать буквы или цифры!" << endl;
+		return 3;
+	}
+	return 0;
 }
 
-void deletingNewlineTransitionCharacter(char* line) {
-	int lineLength;
-	lineLength = strlen(line);
-	line[lineLength - 1] = '\0';
-}
 
-int checkingForCorrectnessOfDateEntry(char* date) {
+int checkingForCorrectnessOfDateEntry(string date) {
 	int i, flag;
 	flag = 0;
-	if ((!isdigit(date[0])) || (!isdigit(date[1]))) {
-		puts("Число введено некорректно!");
+	if (date.length() != 10) {
+		cout << "\nДата содержит меньше символов, чем предусмотрено!" << endl;
 		flag = 1;
 	}
-	if ((date[2] != '.') || (date[5]) != '.') {
-		puts("После числа и месяца необходимо поставить точку !!!");
-		flag = 2;
-	}
-	if ((!isdigit(date[3])) || (!isdigit(date[4]))) {
-		puts("Месяц введен некорректно!");
-		flag = 3;
-	}
-	for (i = 6; i < 10; i++)
-		if (!isdigit(date[i])) {
-			puts("Год введен некорректно!");
-			flag = 4;
-			break;
+	else {
+		if ((!isdigit(date[0])) || (!isdigit(date[1]))) {
+			cout << "\nЧисло введено некорректно!" << endl;
+			flag = 2;
 		}
+		if ((date[2] != '.') || (date[5]) != '.') {
+			cout << "\nПосле числа и месяца необходимо поставить точку !!!" << endl;
+			flag = 3;
+		}
+		if ((!isdigit(date[3])) || (!isdigit(date[4]))) {
+			cout << "\nМесяц введен некорректно!" << endl;
+			flag = 4;
+		}
+		for (i = 6; i < 10; i++)
+			if (!isdigit(date[i])) {
+				cout << "\nГод введен некорректно!" << endl;
+				flag = 5;
+				break;
+			}
+	}
 	if (flag)
-		puts("ШАБЛОН ВВОДА ДАТЫ - дд.мм.гггг");
-	date[10] = '\0';
+		cout << "\nШАБЛОН ВВОДА ДАТЫ - дд.мм.гггг" << endl;
 	return flag;
 }
 

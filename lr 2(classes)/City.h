@@ -1,30 +1,36 @@
 #pragma once
-#include "Enterprise.h"
+#include "Company.h"
 #include "supportFunction.h"
 
-#define MAXENTERPRISES 5
+#define MAXCOMPANIES 5
 
 class City
 {
 private:
-    char* nameOfCity;
-    int populationOfCity;
-    int numberOfEnterprises;
-    Enterprise listOfEnterprises[MAXENTERPRISES];
+    string name;
+    int population;
+    int numberOfCompanies;
+    Company listOfCompanies[MAXCOMPANIES];
+    static unsigned totalCities;
 public:
-    void setNameOfCity(char* name);
-    void setPopulationOfCity(int popilation);
-    void setNumberOfEnterprises(int number);
-    void setListOfEnterprises(Enterprise enterprises[]);
-    char* getNameOfCity();
-    int getPopulationOfCity();
-    int getNumberOfEnterprises();
-    Enterprise* getListOfEnterprises();
+    void setName(string name);
+    void setPopulation(int popilation);
+    void setNumberOfCompanies(int number);
+    void setListOfCompanies(Company companies[]);
+    string getName();
+    int getPopulation();
+    int getNumberOfCompanies();
+    Company* getListOfCompanies();
     City();
-    City(char* name);
-    City(char* name, int popilation, int number, Enterprise enterprises[]);
+    City(string name);
+    City(string name, int popilation, int number, Company companies[]);
     void inputCityFromConsole();
-    void cityTableHeader();
+    void static cityTableHeader();
     void outputCityToConsole(int number);
+    void static incrementTotalCities();
+    void static printTotalCities();
+    void removeCompany(Company company);
+    City operator ++(int);
+    City& operator ++();
 };
 

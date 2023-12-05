@@ -5,10 +5,14 @@
 #include <cctype>
 #include <conio.h>
 #include <malloc.h>
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
 
 #define LENNAME 100
 
-int protectionAgainstIncorrectTextInput(char* line);
-void deletingNewlineTransitionCharacter(char* line);
-int checkingForCorrectnessOfDateEntry(char* date);
+int protectionAgainstIncorrectTextInput(string line);
+int checkingForCorrectnessOfDateEntry(string date);
 int calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(unsigned long a, unsigned long b);

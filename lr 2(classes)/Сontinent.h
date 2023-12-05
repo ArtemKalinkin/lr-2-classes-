@@ -2,32 +2,34 @@
 #include "Country.h"
 #include "supportFunction.h"
 
+
 #define MAXCOUNTRIES 5
 
-class —ontinent
+class Continent
 {
 private:
-    char* nameOfContinent;
+    string name;
     int numberOfCountries;
-    int squareOfContinent;
+    int square;
     Country listOfCountries[MAXCOUNTRIES];
+    static unsigned totalContinents;
 public:
-    void setNameOfContinent(char *name);
+    void setName(string name);
     void setNumberOfCountries(int number);
-    void setSquareOfContinent(int square);
+    void setSquare(int square);
     void setListOfCountries(Country countries[]);
-    char *getNameOfContinent();
+    string getName();
     int getNumberOfCountries();
-    int getSquareOfContinent();
+    int getSquare();
     Country *getListOfCountries();
-    —ontinent();
-    —ontinent(char *name);
-    —ontinent(char* name, int number, int square, Country countries[]);
+    Continent();
+    Continent(string name);
+    Continent(string name, int number, int square, Country countries[]);
     void input—ontinentFromConsole();
-    void continentTableHeader();
+    void static continentTableHeader();
     void outputContinentToConsole(int number);
-    int choosingCountry();
-
-
+    Country& choosingCountry();
+    void static incrementTotalContinents();
+    void static printTotalContinents();
 };
 
