@@ -7,28 +7,31 @@
 class Subject
 {
 private:
-    char* nameOfSubject;
+    string name;
     int numberOfCities;
-    int populationOfSubject;
-    int squareOfSubject;
+    int population;
+    int square;
     City listOfCities[MAXCITIES];
+    static unsigned totalSubjects;
 public:
-    void setNameOfSubject(char *name);
+    void setName(string name);
     void setNumberOfCities(int number);
-    void setPopulationOfSubject(int population);
-    void setSquareOfSubject(int square);
+    void setPopulation(int population);
+    void setSquare(int square);
     void setListOfCities(City cities[]);
-    char *getNameOfSubject();
+    string getName();
     int getNumberOfCities();
-    int getPopulationOfSubject();
-    int getSquareOfSubject();
+    int getPopulation();
+    int getSquare();
     City *getListOfCities();
     Subject();
-    Subject(char* name);
-    Subject(char* name, int number, int population, int square, City cities[]);
+    Subject(string name);
+    Subject(string name, int number, int population, int square, City cities[]);
     void inputSubjectFromConsole();
-    void subjectTableHeader();
+    void static subjectTableHeader();
     void outputSubjectToConsole(int number);
-    int choosingCity();
+    City& choosingCity();
+    void static incrementTotalSubjects();
+    void static printTotalSubjects();
 };
 

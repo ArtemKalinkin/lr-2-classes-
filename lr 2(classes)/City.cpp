@@ -1,116 +1,175 @@
 #include "City.h"
 
-void City::setNameOfCity(char* name)
+unsigned City::totalCities = 0;
+
+void City::setName(string name)
 {
-	nameOfCity = new char[strlen(name)];
-	strcpy(nameOfCity, name);
+	this->name = name;
 }
 
-void City::setPopulationOfCity(int popilation)
+void City::setPopulation(int population)
 {
-	populationOfCity = popilation;
+	this->population = population;
 }
 
-void City::setNumberOfEnterprises(int number)
+void City::setNumberOfCompanies(int number)
 {
-	numberOfEnterprises = number;
+	numberOfCompanies = number;
 }
 
-void City::setListOfEnterprises(Enterprise enterprises[])
+void City::setListOfCompanies(Company companies[])
 {
-	for (int i = 0; i < MAXENTERPRISES; i++)
-		listOfEnterprises[i] = enterprises[i];
+	for (int i = 0; i < MAXCOMPANIES; i++)
+		listOfCompanies[i] = companies[i];
 }
 
-char* City::getNameOfCity()
+string City::getName()
 {
-	return nameOfCity;
+	return name;
 }
 
-int City::getPopulationOfCity()
+int City::getPopulation()
 {
-	return populationOfCity;
+	return population;
 }
 
-int City::getNumberOfEnterprises()
+int City::getNumberOfCompanies()
 {
-	return numberOfEnterprises;
+	return numberOfCompanies;
 }
 
-Enterprise* City::getListOfEnterprises()
+Company* City::getListOfCompanies()
 {
-	return listOfEnterprises;
+	return listOfCompanies;
 }
 
 City::City()
 {
-	nameOfCity = NULL;
-	populationOfCity = 0;
-	numberOfEnterprises = 0;
+	population = 0;
+	numberOfCompanies = 0;
 }
 
-City::City(char* name)
+City::City(string name)
 {
-	nameOfCity = new char[strlen(name)];
-	strcpy(nameOfCity, name);
-	populationOfCity = 0;
-	numberOfEnterprises = 0;
+	this->name = name;
+	population = 0;
+	numberOfCompanies = 0;
 }
 
-City::City(char* name, int popilation, int number, Enterprise enterprises[])
+City::City(string name, int population, int number, Company companies[])
 {
-	nameOfCity = new char[strlen(name)];
-	strcpy(nameOfCity, name);
-	populationOfCity = popilation;
-	numberOfEnterprises = number;
-	for (int i = 0; i < MAXENTERPRISES; i++)
-		listOfEnterprises[i] = enterprises[i];
+	this->name = name;
+	this->population = population;
+	numberOfCompanies = number;
+	for (int i = 0; i < MAXCOMPANIES; i++)
+		listOfCompanies[i] = companies[i];
 }
 
 
 
 void City::inputCityFromConsole()
 {
-	nameOfCity = new char[LENNAME];
-	puts("\nВВОД ГОРОДА\n");
+	cout << "\nВВОД ГОРОДА\n" << endl;
 	do {
-		puts("Введите название города:");
-		fgets(nameOfCity, LENNAME, stdin);
-	} while (protectionAgainstIncorrectTextInput(nameOfCity));
-	deletingNewlineTransitionCharacter(nameOfCity);
-	puts("Введите население города:");
-	while (scanf("%d", &populationOfCity) != 1) {
+		cout << "Введите название города:" << endl;
+		getline(cin, name);
+	} while (protectionAgainstIncorrectTextInput(name));
+	cout << "Введите население города:" << endl;
+	while (scanf("%d", &population) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите население города:\n");
+		cout << "\nОшибка ввода!\nВведите население города:\n";
 	}
-	puts("Введите количество предприятий в городе:");
-	while (scanf("%d", &numberOfEnterprises) != 1) {
+	cout << "Введите количество предприятий в городе:" << endl;
+	while (scanf("%d", &numberOfCompanies) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите количество предприятий в городе:\n");
+		cout << "\nОшибка ввода!\nВведите количество компаний в городе:\n";
 	}
 	while (getchar() != '\n');
 }
 
 void City::cityTableHeader()
 {
-	printf("**********************************************************************************************************\n");
-	printf("* Номер *       Город        * Количество предприятий * Население *          Список предприятий          *\n");
-	printf("**********************************************************************************************************\n");
+	cout << "**********************************************************************************************************" << endl;
+	cout << "* Номер *       Город        * Количество предприятий * Население *           Список компаний            *" << endl;
+	cout << "**********************************************************************************************************" << endl;
 }
 
 void City::outputCityToConsole(int number)
 {
 	int i;
-	printf("* %-5d * %-18s * %-22d * %-9d * ", number + 1, nameOfCity, numberOfEnterprises, populationOfCity);
-	printf("%-36s *\n", listOfEnterprises[0].getNameOfEnterprise());
+	cout << "* " << setw(5) << left << number + 1 << " * ";
+	cout << setw(18) << left << name << " * ";
+	cout << setw(22) << left << numberOfCompanies << " * ";
+	cout << setw(9) << left << population << " * ";
+	cout << setw(36) << left << listOfCompanies[0].getName() << " *" << endl;
 	i = 1;
-	while ((listOfEnterprises[i].getNameOfEnterprise() != NULL) && (i < MAXENTERPRISES)) {
-		printf("*       *                    *                        *           * %-36s *\n", listOfEnterprises[i].getNameOfEnterprise());
+	while ((!listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES)) {
+		cout << "*       *                    *                        *           * ";
+		cout << setw(36) << left << listOfCompanies[i].getName() << " *" << endl;
 		i++;
 	}
 	printf("**********************************************************************************************************\n");
 }
 
 
+void City::incrementTotalCities()
+{
+	totalCities++;
+}
 
+void City::printTotalCities()
+{
+	cout << "Всего вы внесли в список " << totalCities << " городов" << endl;
+}
+
+void City::removeCompany(Company company)
+{
+	int i = 0;
+	while ((!listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES)) {
+		if (listOfCompanies[i].getName() == company.getName())
+			break;
+		i++;
+	}
+	while ((!listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES)) {
+		if (i != MAXCOMPANIES - 1)
+			listOfCompanies[i] = listOfCompanies[i + 1];
+		else {
+			listOfCompanies[i].setName("");
+			listOfCompanies[i].setcitySubjectCountry("");
+			listOfCompanies[i].setTurnoverPerYear(0);
+			listOfCompanies[i].setNetProfit(0);
+			listOfCompanies[i].setDateOfFoundation("");
+			listOfCompanies[i].setIndustry("");
+		}
+		
+	}
+}
+
+
+City City::operator++(int)
+{
+	int i;
+	City oldCity = *this;
+	Company company;
+	company.inputCompanyFromConsole();
+	i = 0;
+	while ((!listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES))
+		i++;
+	listOfCompanies[i] = company;
+	Company::incrementTotalCompanies();
+	return oldCity;
+}
+
+City& City::operator++()
+{
+	int i;
+	Company company;
+	company.inputCompanyFromConsole();
+	i = 0;
+	while ((!listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES))
+		i++;
+	listOfCompanies[i] = company;
+	Company::incrementTotalCompanies();
+	return *this;
+}
 

@@ -18,7 +18,7 @@
     <ClCompile Include="lr 2(classes).cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Enterprise.cpp">
+    <ClCompile Include="Company.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="City.cpp">
@@ -36,9 +36,12 @@
     <ClCompile Include="supportFunction.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Enterprise.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Enterprise.h">
+    <ClInclude Include="Company.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="City.h">
@@ -54,6 +57,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="supportFunction.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Enterprise.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,9 +1,10 @@
 #include "Subject.h"
 
-void Subject::setNameOfSubject(char* name)
+unsigned Subject::totalSubjects = 0;
+
+void Subject::setName(string name)
 {
-	nameOfSubject = new char[strlen(name)];
-	strcpy(nameOfSubject, name);
+	this->name = name;
 }
 
 void Subject::setNumberOfCities(int number)
@@ -11,14 +12,14 @@ void Subject::setNumberOfCities(int number)
 	numberOfCities = number;
 }
 
-void Subject::setPopulationOfSubject(int population)
+void Subject::setPopulation(int population)
 {
-	populationOfSubject = population;
+	this->population = population;
 }
 
-void Subject::setSquareOfSubject(int square)
+void Subject::setSquare(int square)
 {
-	squareOfSubject = square;
+	this->square = square;
 }
 
 void Subject::setListOfCities(City cities[])
@@ -29,9 +30,9 @@ void Subject::setListOfCities(City cities[])
 	}
 }
 
-char* Subject::getNameOfSubject()
+string Subject::getName()
 {
-	return nameOfSubject;
+	return name;
 }
 
 int Subject::getNumberOfCities()
@@ -39,14 +40,14 @@ int Subject::getNumberOfCities()
 	return numberOfCities;
 }
 
-int Subject::getPopulationOfSubject()
+int Subject::getPopulation()
 {
-	return populationOfSubject;
+	return population;
 }
 
-int Subject::getSquareOfSubject()
+int Subject::getSquare()
 {
-	return squareOfSubject;
+	return square;
 }
 
 City* Subject::getListOfCities()
@@ -56,28 +57,25 @@ City* Subject::getListOfCities()
 
 Subject::Subject()
 {
-	nameOfSubject = NULL;
 	numberOfCities = 0;
-	populationOfSubject = 0;
-	squareOfSubject = 0;
+	population = 0;
+	square = 0;
 }
 
-Subject::Subject(char* name)
+Subject::Subject(string name)
 {
-	nameOfSubject = new char[strlen(name)];
-	strcpy(nameOfSubject, name);
+	this->name = name;
 	numberOfCities = 0;
-	populationOfSubject = 0;
-	squareOfSubject = 0;
+	population = 0;
+	square = 0;
 }
 
-Subject::Subject(char* name, int number, int population, int square, City cities[])
+Subject::Subject(string name, int number, int population, int square, City cities[])
 {
-	nameOfSubject = new char[strlen(name)];
-	strcpy(nameOfSubject, name);
-	numberOfCities = number;
-	populationOfSubject = population;
-	squareOfSubject = square;
+	this->name = name;
+	this->numberOfCities = number;
+	this->population = population;
+	this->square = square;
 	for (int i = 0; i < MAXCITIES; i++)
 	{
 		listOfCities[i] = cities[i];
@@ -88,68 +86,81 @@ Subject::Subject(char* name, int number, int population, int square, City cities
 
 void Subject::inputSubjectFromConsole()
 {
-	nameOfSubject = new char[LENNAME];
-	puts("\nВВОД СУБЪЕКТА\n");
+	cout <<"\nВВОД СУБЪЕКТА\n" << endl;
 	do {
 		puts("Введите название субъекта:");
-		fgets(nameOfSubject, LENNAME, stdin);
-	} while (protectionAgainstIncorrectTextInput(nameOfSubject));
-	deletingNewlineTransitionCharacter(nameOfSubject);
-	puts("Введите население субъекта:");
-	while (scanf("%d", &populationOfSubject) != 1) {
+		getline(cin, name);
+	} while (protectionAgainstIncorrectTextInput(name));
+	cout << "Введите население субъекта:" << endl;
+	while (scanf("%d", &population) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите население субъекта:\n");
+		cout << "\nОшибка ввода!\nВведите население субъекта:\n";
 	}
-	puts("Введите количество городов в субъекте:");
+	cout << "Введите количество городов в субъекте:" << endl;
 	while (scanf("%d", &numberOfCities) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите количество городов в субъекте:\n");
+		cout << "\nОшибка ввода!\nВведите количество городов в субъекте:\n";
 	}
-	puts("Введите площадь субъекта:");
-	while (scanf("%d", &squareOfSubject) != 1) {
+	cout << "Введите площадь субъекта:" << endl;
+	while (scanf("%d", &square) != 1) {
 		while (getchar() != '\n');
-		printf("\nОшибка ввода!\nВведите площадь субъекта:\n");
+		cout << "\nОшибка ввода!\nВведите площадь субъекта:\n";
 	}
 	while (getchar() != '\n');
 }
 
 void Subject::subjectTableHeader()
 {
-	printf("*****************************************************************************************************************\n");
-	printf("* Номер *       Субъект      * Количество городов * Площадь субъекта * Население *        Список городов        *\n");
-	printf("*****************************************************************************************************************\n");
+	cout << "*****************************************************************************************************************" << endl;
+	cout << "* Номер *       Субъект      * Количество городов * Площадь субъекта * Население *        Список городов        *" << endl;
+	cout << "*****************************************************************************************************************" << endl;
 }
 
 void Subject::outputSubjectToConsole(int number)
 {
 	int i;
-	printf("* %-5d * %-18s * %-18d * ", number + 1, nameOfSubject, numberOfCities);
-	printf("%-16d * %-9d * ", squareOfSubject, populationOfSubject);
-	printf("%-28s *\n", listOfCities[0].getNameOfCity());
+	cout << "* " << setw(5) << left << number + 1 << " * ";
+	cout << setw(18) << left << name << " * ";
+	cout << setw(18) << left << numberOfCities << " * ";
+	cout << setw(16) << left << square << " * ";
+	cout << setw(9) << left << population << " * ";
+	cout << setw(28) << left << listOfCities[0].getName() << " *" << endl;
 	i = 1;
-	while ((listOfCities[i].getNameOfCity() != NULL) && (i < MAXCITIES)) {
-		printf("*       *                    *                    *                  *           * %-28s *\n", listOfCities[i].getNameOfCity());
+	while ((!listOfCities[i].getName().empty()) && (i < MAXCITIES)) {
+		cout << "*       *                    *                    *                  *           * ";
+		cout << setw(28) << left << listOfCities[i].getName() << " *" << endl;
 	}
-	printf("*****************************************************************************************************************\n");
+	cout << "*****************************************************************************************************************" << endl;
 }
 
-int Subject::choosingCity()
+City& Subject::choosingCity()
 {
 	int i, n, number;
 	char character;
 	listOfCities[0].cityTableHeader();
 	i = 0;
-	while (listOfCities[i].getNameOfCity() != NULL) {
+	while (!listOfCities[i].getName().empty()) {
 		listOfCities[i].outputCityToConsole( i);
 		i++;
 	}
 	n = i + 1;
-	puts("\nВыберите город\n");
+	cout << "\n\nВыберите город\n" << endl;
 	do {
 		character = _getch();
 		number = character - '0';
 	} while ((number < 1) || (number > n));
-	return number - 1;
+	return listOfCities[number - 1];
+}
+
+
+void Subject::incrementTotalSubjects()
+{
+	totalSubjects++;
+}
+
+void Subject::printTotalSubjects()
+{
+	cout << "Всего вы внесли в список " << totalSubjects  << " субъектов" << endl;
 }
 
 
