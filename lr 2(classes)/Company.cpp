@@ -5,16 +5,22 @@ unsigned Company::totalCompanies = 0;
 
 void Company::setName(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 }
 
 void Company::setcitySubjectCountry(string address)
 {
+	if (address.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	citySubjectCountry = address;
 }
 
 void Company::setTurnoverPerYear(unsigned long turnover)
 {
+	if (turnover < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	turnoverPerYear = turnover;
 }
 
@@ -25,11 +31,15 @@ void Company::setNetProfit(long profit)
 
 void Company::setDateOfFoundation(string date)
 {
+	if (date.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	dateOfFoundation = date;
 }
 
 void Company::setIndustry(string industry)
 {
+	if (industry.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->industry = industry;
 }
 
@@ -71,6 +81,8 @@ Company::Company()
 
 Company::Company(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 	turnoverPerYear = 0;
 	netProfit = 0;
@@ -78,11 +90,21 @@ Company::Company(string name)
 
 Company::Company(string name, string address, unsigned long turnover, long profit, string date, string industry)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
+	if (address.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	citySubjectCountry = address;
+	if (turnover < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	turnoverPerYear = turnover;
 	netProfit = profit;
+	if (date.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	dateOfFoundation = date;
+	if (industry.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->industry = industry;
 }
 
@@ -91,9 +113,19 @@ void Company::inputCompanyFromConsole()
 {
 	cout << "\nВВОД КОМПАНИИ\n" << endl;
 	do {
-		cout << "Введите название компании:" << endl;
-		getline(cin, name);
-	} while (protectionAgainstIncorrectTextInput(name));
+		try {
+			cout << "Введите название компаниии:" << endl;
+			getline(cin, name);
+			protectionAgainstIncorrectTextInput(name);
+			break;
+		}
+		catch (const invalid_argument e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+		catch (const length_error e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+	} while (true);
 	do {
 		do {
 			cout << "Введите дату основания компании:" << endl;
@@ -101,9 +133,19 @@ void Company::inputCompanyFromConsole()
 		} while (protectionAgainstIncorrectTextInput(dateOfFoundation));
 	} while (checkingForCorrectnessOfDateEntry(dateOfFoundation));
 	do {
-		cout << "Введите отрасль компании:" << endl;
-		getline(cin, industry);
-	} while (protectionAgainstIncorrectTextInput(industry));
+		try {
+			cout << "Введите отрасль компании:" << endl;
+			getline(cin, industry);
+			protectionAgainstIncorrectTextInput(industry);
+			break;
+		}
+		catch (const invalid_argument e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+		catch (const length_error e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+	} while (true);
 	cout << "Введите оборот за год:" << endl;
 	while (scanf("%d", &turnoverPerYear) != 1) {
 		while (getchar() != '\n');

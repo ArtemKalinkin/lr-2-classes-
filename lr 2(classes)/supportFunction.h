@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#define LENNAME 100
+#define LENNAME 50
 
 int protectionAgainstIncorrectTextInput(string line);
 int checkingForCorrectnessOfDateEntry(string date);

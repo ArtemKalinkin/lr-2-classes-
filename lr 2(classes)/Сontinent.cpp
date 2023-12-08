@@ -4,16 +4,22 @@ unsigned Continent::totalContinents = 0;
 
 void Continent::setName(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 }
 
 void Continent::setNumberOfCountries(int number)
 {
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCountries = number;
 }
 
 void Continent::setSquare(int square)
 {
+	if (square < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->square = square;
 }
 
@@ -53,6 +59,8 @@ Continent::Continent()
 
 Continent::Continent(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 	numberOfCountries = 0;
 	square = 0;
@@ -60,8 +68,14 @@ Continent::Continent(string name)
 
 Continent::Continent(string name, int number, int square, Country countries[])
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCountries = number;
+	if (square < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->square = square;
 	for (int i = 0; i < MAXCOUNTRIES; i++)
 	{
@@ -72,12 +86,21 @@ Continent::Continent(string name, int number, int square, Country countries[])
 
 void Continent::inputСontinentFromConsole()
 {
-	name = new char[LENNAME];
 	puts("ВВОД КОНТИНЕНТА\n");
 	do {
-		cout << "Введите название континента:" << endl;
-		getline(cin, name);
-	} while (protectionAgainstIncorrectTextInput(name));
+		try {
+			cout << "Введите название континента:" << endl;
+			getline(cin, name);
+			protectionAgainstIncorrectTextInput(name);
+			break;
+		}
+		catch (const invalid_argument e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+		catch (const length_error e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+	} while (true);
 	cout << "Введите количество стран на континенте:" << endl;
 	while (scanf("%d", &numberOfCountries) != 1) {
 		while (getchar() != '\n');
@@ -112,7 +135,7 @@ void Continent::outputContinentToConsole(int number)
 		cout << setw(30) << left << listOfCountries[i].getName() << " *" << endl;
 		i++;
 	}
-	cout <<"*******************************************************************************************************\n";
+	cout << "*******************************************************************************************************\n";
 }
 
 Country& Continent::choosingCountry()

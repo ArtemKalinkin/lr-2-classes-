@@ -4,16 +4,22 @@ unsigned City::totalCities = 0;
 
 void City::setName(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 }
 
 void City::setPopulation(int population)
 {
+	if (population < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->population = population;
 }
 
 void City::setNumberOfCompanies(int number)
 {
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCompanies = number;
 }
 
@@ -51,6 +57,8 @@ City::City()
 
 City::City(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 	population = 0;
 	numberOfCompanies = 0;
@@ -58,8 +66,14 @@ City::City(string name)
 
 City::City(string name, int population, int number, Company companies[])
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
+	if (population < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->population = population;
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCompanies = number;
 	for (int i = 0; i < MAXCOMPANIES; i++)
 		listOfCompanies[i] = companies[i];
@@ -71,9 +85,19 @@ void City::inputCityFromConsole()
 {
 	cout << "\nВВОД ГОРОДА\n" << endl;
 	do {
-		cout << "Введите название города:" << endl;
-		getline(cin, name);
-	} while (protectionAgainstIncorrectTextInput(name));
+		try {
+			cout << "Введите название города:" << endl;
+			getline(cin, name);
+			protectionAgainstIncorrectTextInput(name);
+			break;
+		}
+		catch (const invalid_argument e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+		catch (const length_error e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+	} while (true);
 	cout << "Введите население города:" << endl;
 	while (scanf("%d", &population) != 1) {
 		while (getchar() != '\n');
@@ -141,7 +165,7 @@ void City::removeCompany(Company company)
 			listOfCompanies[i].setDateOfFoundation("");
 			listOfCompanies[i].setIndustry("");
 		}
-		
+
 	}
 }
 

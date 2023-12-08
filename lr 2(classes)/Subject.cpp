@@ -4,21 +4,29 @@ unsigned Subject::totalSubjects = 0;
 
 void Subject::setName(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 }
 
 void Subject::setNumberOfCities(int number)
 {
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCities = number;
 }
 
 void Subject::setPopulation(int population)
 {
+	if (population < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->population = population;
 }
 
 void Subject::setSquare(int square)
 {
+	if (square < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->square = square;
 }
 
@@ -64,6 +72,8 @@ Subject::Subject()
 
 Subject::Subject(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 	numberOfCities = 0;
 	population = 0;
@@ -72,9 +82,17 @@ Subject::Subject(string name)
 
 Subject::Subject(string name, int number, int population, int square, City cities[])
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->numberOfCities = number;
+	if (population < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->population = population;
+	if (square < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->square = square;
 	for (int i = 0; i < MAXCITIES; i++)
 	{
@@ -86,11 +104,21 @@ Subject::Subject(string name, int number, int population, int square, City citie
 
 void Subject::inputSubjectFromConsole()
 {
-	cout <<"\nВВОД СУБЪЕКТА\n" << endl;
+	cout << "\nВВОД СУБЪЕКТА\n" << endl;
 	do {
-		puts("Введите название субъекта:");
-		getline(cin, name);
-	} while (protectionAgainstIncorrectTextInput(name));
+		try {
+			cout << "Введите название субъекта:" << endl;
+			getline(cin, name);
+			protectionAgainstIncorrectTextInput(name);
+			break;
+		}
+		catch (const invalid_argument e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+		catch (const length_error e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+	} while (true);
 	cout << "Введите население субъекта:" << endl;
 	while (scanf("%d", &population) != 1) {
 		while (getchar() != '\n');
@@ -140,7 +168,7 @@ City& Subject::choosingCity()
 	listOfCities[0].cityTableHeader();
 	i = 0;
 	while (!listOfCities[i].getName().empty()) {
-		listOfCities[i].outputCityToConsole( i);
+		listOfCities[i].outputCityToConsole(i);
 		i++;
 	}
 	n = i + 1;
@@ -160,7 +188,7 @@ void Subject::incrementTotalSubjects()
 
 void Subject::printTotalSubjects()
 {
-	cout << "Всего вы внесли в список " << totalSubjects  << " субъектов" << endl;
+	cout << "Всего вы внесли в список " << totalSubjects << " субъектов" << endl;
 }
 
 

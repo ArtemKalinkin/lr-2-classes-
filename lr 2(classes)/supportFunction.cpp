@@ -9,19 +9,16 @@
 int protectionAgainstIncorrectTextInput(string line) {
 	string letters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	    "абвгдеЄжщийклмнопрстуфхцчшщъыьэю€јЅ¬√ƒ≈®∆«»… ЋћЌќѕ–—“”‘’÷„ЎўЏџ№Ёёя";
+		"абвгдеЄжщийклмнопрстуфхцчшщъыьэю€јЅ¬√ƒ≈®∆«»… ЋћЌќѕ–—“”‘’÷„ЎўЏџ№Ёёя";
 	string digits = "1234567890";
 	if (line.empty()) {
-		cout << ("ќшибка! ƒанное поле не может быть пустым!") << endl;
-		return 1;
+		throw invalid_argument("—трока не может быть пустой!");
 	}
 	if (line.length() > LENNAME) {
-		cout << ("ќшибка!  оличество символов превышает допустимое зачение!") << endl;
-		return 2;
+		throw length_error("—лишком больша€ длина строки!");
 	}
-	if ((!line.find_first_of(letters)) && (!line.find_first_of(digits))) {
-		cout << "ќшибка! ¬ данном поле должны присутвовать буквы или цифры!" << endl;
-		return 3;
+	if ((line.find_first_of(letters) == string::npos) && (line.find_first_of(digits) == string::npos)) {
+		throw invalid_argument("—трока должна содержать буквы или цифры!");
 	}
 	return 0;
 }

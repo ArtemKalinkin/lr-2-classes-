@@ -5,11 +5,15 @@ unsigned Country::totalCountries = 0;
 
 void Country::setName(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 }
 
 void Country::setNumberOfSubjects(int number)
 {
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfSubjects = number;
 }
 
@@ -20,22 +24,30 @@ void Country::setNetProfitCountryFromCompanies(unsigned long profit)
 
 void Country::setPopulation(int population)
 {
+	if (population < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->population = population;
 }
 
 void Country::setSquare(int square)
 {
+	if (square < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->square = square;
 }
 
 void Country::setIncome(unsigned long income)
 {
+	if (income < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->income = income;
 	budgetDeficitOrSurplus = income - expenses;
 }
 
 void Country::setExpenses(unsigned long expenses)
 {
+	if (expenses < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->expenses = expenses;
 	budgetDeficitOrSurplus = income - expenses;
 }
@@ -106,6 +118,8 @@ Country::Country()
 
 Country::Country(string name)
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
 	numberOfSubjects = 0;
 	netProfitFromCompanies = 0;
@@ -119,18 +133,30 @@ Country::Country(string name)
 
 Country::Country(string name, int number, int population, int square, unsigned long income, unsigned long expenses, Subject subjects[])
 {
+	if (name.empty())
+		throw invalid_argument("Строка не может быть пустой!");
 	this->name = name;
+	if (number < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->numberOfSubjects = number;
-	this->netProfitFromCompanies = calculatingProfitsFromCompanies();
+	if (population < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->population = population;
+	if (square < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->square = square;
+	if (income < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->income = income;
+	if (expenses < 0)
+		throw invalid_argument("Значение не может быть отрицательным!");
 	this->expenses = expenses;
 	budgetDeficitOrSurplus = income - expenses;
 	for (int i = 0; i < MAXSUBJECTS; i++)
 	{
 		listOfSubjects[i] = subjects[i];
 	}
+	this->netProfitFromCompanies = calculatingProfitsFromCompanies();
 }
 
 
@@ -158,9 +184,19 @@ void Country::inputCountryFromConsole()
 {
 	puts("\nВВОД СТРАНЫ\n");
 	do {
-		cout << "Введите название страны:" << endl;
-		getline(cin, name);
-	} while (protectionAgainstIncorrectTextInput(name));
+		try {
+			cout << "Введите название страны:" << endl;
+			getline(cin, name);
+			protectionAgainstIncorrectTextInput(name);
+			break;
+		}
+		catch (const invalid_argument e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+		catch (const length_error e) {
+			cerr << "Произошла ошибка: " << e.what() << endl;
+		}
+	} while (true);
 	cout << "Введите население страны:" << endl;
 	while (scanf("%d", &population) != 1) {
 		while (getchar() != '\n');
@@ -217,7 +253,7 @@ void Country::outputCountryToConsole(int number)
 		cout << setw(25) << left << listOfSubjects[i].getName() << " *" << endl;
 		i++;
 	}
-	cout <<"**************************************************************************************************************************************************************************************************" << endl;
+	cout << "**************************************************************************************************************************************************************************************************" << endl;
 }
 
 Subject& Country::choosingSubject()
@@ -304,7 +340,7 @@ int Country::comparisonOfTwoCountries(Country* secondCountry)
 	// Расходы
 	if (this->expenses > secondCountry->expenses) {
 		percentageOfExpenses = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(expenses, secondCountry->expenses);
-		cout << "Расходы страны - "<< this->name << " больше доходов страны - " << secondCountry->name << " на " << percentageOfExpenses << "%" << endl;
+		cout << "Расходы страны - " << this->name << " больше доходов страны - " << secondCountry->name << " на " << percentageOfExpenses << "%" << endl;
 	}
 	else if (this->expenses < secondCountry->expenses) {
 		percentageOfExpenses = calculatingByHowManyPercentFirstNumberIsGreaterThanSecond(secondCountry->expenses, expenses);
