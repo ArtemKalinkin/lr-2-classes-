@@ -56,7 +56,8 @@ int main()
 	i = 0;
 	countries[0].countryTableHeader();
 	while ((!countries[i].getName().empty()) && (i < MAXCOUNTRIES)) {
-		countries[i].outputCountryToConsole(i);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << countries[i];
 		i++;
 	}
 	n = i;
@@ -96,8 +97,10 @@ int main()
 	*theCountryOne = countries[numberFirst - 1];
 	*theCountryTwo = countries[numberSecond - 1];
 	theCountryOne->countryTableHeader();
-	theCountryOne->outputCountryToConsole(0);
-	theCountryTwo->outputCountryToConsole(1);
+	cout << "* " << setw(5) << left << 1 << " * ";
+	cout << *theCountryOne;
+	cout << "* " << setw(5) << left << 2 << " * ";
+	cout << *theCountryTwo;
 	if (theCountryOne->comparisonOfTwoCountries(theCountryTwo) == 1)
 		cout << "\nПо общим показателям страна - " << theCountryOne->getName() << " лучше страны - " << theCountryTwo->getName() << endl;
 	else
@@ -143,7 +146,7 @@ void inputAllClasses(Continent continents[])
 					address = countries[j].getName() + ", " + subjects[k].getName() + ", " + cities[x].getName();
 					z = 0;
 					do {
-						companies[z].inputCompanyFromConsole();
+						companies[z].inputCompanyFromConsole(0);
 						try {
 							companies[z].setcitySubjectCountry(address);
 						}
@@ -206,7 +209,8 @@ Continent& choosingContinent(Continent continents[]) {
 	continents[0].continentTableHeader();
 	i = 0;
 	while ((!continents[i].getName().empty()) && (i < MAXCONTINENTS)) {
-		continents[i].outputContinentToConsole(i);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << continents[i];
 		i++;
 	}
 	n = i;
@@ -236,7 +240,8 @@ void outputStm(Continent* continets, int number)
 		i = 0;
 		Continent::continentTableHeader();
 		while ((!continets[i].getName().empty()) && (i < MAXCONTINENTS)) {
-			continets[i].outputContinentToConsole(i);
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << continets[i];
 			i++;
 		}
 		break;
@@ -246,7 +251,8 @@ void outputStm(Continent* continets, int number)
 		i = 0;
 		Country::countryTableHeader();
 		while ((!countries[i].getName().empty()) && (i < MAXCOUNTRIES)) {
-			countries[i].outputCountryToConsole(i);
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << countries[i];
 			i++;
 		}
 		break;
@@ -257,7 +263,8 @@ void outputStm(Continent* continets, int number)
 		i = 0;
 		Subject::subjectTableHeader();
 		while ((!subjects[i].getName().empty()) && (i < MAXSUBJECTS)) {
-			subjects[i].outputSubjectToConsole(i);
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << subjects[i];
 			i++;
 		}
 		break;
@@ -269,7 +276,8 @@ void outputStm(Continent* continets, int number)
 		i = 0;
 		City::cityTableHeader();
 		while ((!cities[i].getName().empty()) && (i < MAXCITIES)) {
-			cities[i].outputCityToConsole(i);
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << cities[i];
 			i++;
 		}
 		break;
@@ -282,7 +290,8 @@ void outputStm(Continent* continets, int number)
 		i = 0;
 		Company::companyTableHeader();
 		while ((!companies[i].getName().empty()) && (i < MAXCOMPANIES)) {
-			companies[i].outputCompanyToConsole(i);
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << companies[i];
 			i++;
 		}
 		break;
@@ -381,7 +390,8 @@ void mergerOfCompanies(Continent listOfcontinents[])
 	}
 	Company::companyTableHeader();
 	for (i = 0; i < number; i++) {
-		listPtrOfCompanies[i]->outputCompanyToConsole(i + 1);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << *listPtrOfCompanies[i];
 	}
 	do {
 		cout << "Введите номер компании-покупателя: ";
@@ -426,7 +436,7 @@ void workWithArrays()
 	cout << "Ввод барнаульских компаний" << endl;
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			companiesTwo[i][j].inputCompanyFromConsole();
+			companiesTwo[i][j].inputCompanyFromConsole(0);
 			companiesTwo[i][j].setcitySubjectCountry("Россия, Алтайский край, Барнаул");
 			companiesOne[k] = companiesTwo[i][j];
 			k++;
@@ -437,7 +447,8 @@ void workWithArrays()
 	k = 0;
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			companiesTwo[i][j].outputCompanyToConsole(k);
+			cout << "* " << setw(5) << left << k + 1 << " * ";
+			cout << companiesTwo[i][j];
 			k++;
 		}
 	}
@@ -445,7 +456,8 @@ void workWithArrays()
 	cout << "\n\nСписок после сортировки:\n" << endl;
 	Company::companyTableHeader();
 	for (int i = 0; i < 16; i++) {
-		companiesOne[i].outputCompanyToConsole(i);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << companiesOne[i];
 	}
 }
 
@@ -480,7 +492,8 @@ void compareCompanies(Company* listPtrOfCompanies[], int number) {
 	int maxProfit;
 	Company::companyTableHeader();
 	for (i = 0; i < number; i++) {
-		listPtrOfCompanies[i]->outputCompanyToConsole(i);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << *listPtrOfCompanies[i];
 	}
 	count = 0;
 	do {

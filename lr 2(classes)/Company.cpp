@@ -43,7 +43,7 @@ void Company::setIndustry(string industry)
 	this->industry = industry;
 }
 
-string Company::getName()
+string Company::getName() const
 {
 	return name;
 }
@@ -88,7 +88,7 @@ Company::Company(string name)
 	netProfit = 0;
 }
 
-Company::Company(string name, string address, unsigned long turnover, long profit, string date, string industry)
+Company::Company(string name, string address, unsigned long turnover, long profit, string date, string industry, string activity)
 {
 	if (name.empty())
 		throw invalid_argument("Строка не может быть пустой!");
@@ -106,15 +106,26 @@ Company::Company(string name, string address, unsigned long turnover, long profi
 	if (industry.empty())
 		throw invalid_argument("Строка не может быть пустой!");
 	this->industry = industry;
+	if (activity.empty())
+		throw invalid_argument("Строка не может быть пустой!");
+	this->activity = activity;
 }
 
 
-void Company::inputCompanyFromConsole()
+void Company::inputCompanyFromConsole(int mode)
 {
-	cout << "\nВВОД КОМПАНИИ\n" << endl;
+	string s;
+	if (mode) {
+		s = "филиала компании";
+		cout << "\nВВОД ФИЛИАЛА КОМПАНИИ\n" << endl;
+	}
+	else {
+		s = "компании";
+		cout << "\nВВОД КОМПАНИИ\n" << endl;
+	}
 	do {
 		try {
-			cout << "Введите название компаниии:" << endl;
+			cout << "Введите название " << s << ":" << endl;
 			getline(cin, name);
 			protectionAgainstIncorrectTextInput(name);
 			break;
@@ -128,13 +139,13 @@ void Company::inputCompanyFromConsole()
 	} while (true);
 	do {
 		do {
-			cout << "Введите дату основания компании:" << endl;
+			cout << "Введите дату основания " << s << ":" << endl;
 			getline(cin, dateOfFoundation);
 		} while (protectionAgainstIncorrectTextInput(dateOfFoundation));
 	} while (checkingForCorrectnessOfDateEntry(dateOfFoundation));
 	do {
 		try {
-			cout << "Введите отрасль компании:" << endl;
+			cout << "Введите отрасль " << s << ":" << endl;
 			getline(cin, industry);
 			protectionAgainstIncorrectTextInput(industry);
 			break;
@@ -151,31 +162,43 @@ void Company::inputCompanyFromConsole()
 		while (getchar() != '\n');
 		cout << "\nОшибка ввода!\nВведите оборот за год:\n";
 	}
-	cout << "Введите прибыль компании:" << endl;
+	cout << "Введите прибыль " << s << ":" << endl;
 	while (scanf("%d", &netProfit) != 1) {
 		while (getchar() != '\n');
-		cout << "\nОшибка ввода!\nВведите прибыль компании:\n";
+		cout << "\nОшибка ввода!\nВведите прибыль " << s << ":\n";
 	}
 	while (getchar() != '\n');
+	cout << "Введите описание деятельности " << s << ":" << endl;
+	getline(cin, activity);
 }
 
 void Company::companyTableHeader()
 {
 	cout << "*****************************************************************************************************************************************************************************" << endl;
-	cout << "* Номер *        Компания         *                  Местоположение                 *   Оборот за год   *    Прибыль    *              Отрасль             * Дата основания *" << endl;
+	cout << "* Номер *                          Компания                            *                  Местоположение                 *   Оборот за год   *    Прибыль    *              Отрасль             * Дата основания *" << endl;
 	cout << "*****************************************************************************************************************************************************************************" << endl;
 }
 
 void Company::outputCompanyToConsole(int number)
 {
 	cout << "* " << setw(5) << left << number + 1 << " * ";
-	cout << setw(23) << left << name << " * ";
+	cout << setw(60) << left << name << " * ";
 	cout << setw(47) << left << citySubjectCountry << " * ";
 	cout << setw(17) << left << turnoverPerYear << " * ";
 	cout << setw(13) << left << netProfit << " * ";
 	cout << setw(32) << left << industry << " * ";
 	cout << setw(14) << left << dateOfFoundation << " *" << endl;
 	cout << "*****************************************************************************************************************************************************************************" << endl;
+}
+
+ostream& operator<<(ostream& os, const Company& company) {
+	os << setw(60) << left << company.name << " * ";
+	os << setw(47) << left << company.citySubjectCountry << " * ";
+	os << setw(17) << left << company.turnoverPerYear << " * ";
+	os << setw(13) << left << company.netProfit << " * ";
+	os << setw(32) << left << company.industry << " * ";
+	os << setw(14) << left << company.dateOfFoundation << " *" << endl;
+	os << "*****************************************************************************************************************************************************************************" << endl;
 }
 
 
@@ -195,6 +218,20 @@ Company Company::operator+(const Company& company)
 	buyingСompany.turnoverPerYear += company.turnoverPerYear;
 	buyingСompany.netProfit += company.netProfit;
 	return buyingСompany;
+}
+
+Company& Company::operator=(const Company& other)
+{
+	if (this != &other) {
+		name = other.name;
+		citySubjectCountry = other.citySubjectCountry;
+		turnoverPerYear = other.turnoverPerYear;
+		netProfit = other.netProfit;
+		dateOfFoundation = other.dateOfFoundation;
+		industry = other.industry;
+		activity = other.activity;
+	}
+	return *this;
 }
 
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "Company.h"
+#include "Branch.h"
 #include "supportFunction.h"
 
 #define MAXCOMPANIES 5
@@ -17,7 +18,7 @@ public:
     void setPopulation(int popilation);
     void setNumberOfCompanies(int number);
     void setListOfCompanies(Company companies[]);
-    string getName();
+    string getName() const;
     int getPopulation();
     int getNumberOfCompanies();
     Company* getListOfCompanies();
@@ -27,6 +28,7 @@ public:
     void inputCityFromConsole();
     void static cityTableHeader();
     void outputCityToConsole(int number);
+    friend ostream& operator<<(ostream& os, const City& city);
     void static incrementTotalCities();
     void static printTotalCities();
     void removeCompany(Company company);

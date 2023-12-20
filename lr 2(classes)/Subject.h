@@ -19,7 +19,7 @@ public:
     void setPopulation(int population);
     void setSquare(int square);
     void setListOfCities(City cities[]);
-    string getName();
+    string getName() const;
     int getNumberOfCities();
     int getPopulation();
     int getSquare();
@@ -30,6 +30,7 @@ public:
     void inputSubjectFromConsole();
     void static subjectTableHeader();
     void outputSubjectToConsole(int number);
+    friend ostream& operator<<(ostream& os, const Subject& subject);
     City& choosingCity();
     void static incrementTotalSubjects();
     void static printTotalSubjects();

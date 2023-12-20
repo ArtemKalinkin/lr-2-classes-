@@ -38,7 +38,7 @@ void Subject::setListOfCities(City cities[])
 	}
 }
 
-string Subject::getName()
+string Subject::getName() const
 {
 	return name;
 }
@@ -161,6 +161,21 @@ void Subject::outputSubjectToConsole(int number)
 	cout << "*****************************************************************************************************************" << endl;
 }
 
+ostream& operator<<(ostream& os, const Subject& subject) {
+	int i;
+	os << setw(18) << left << subject.name << " * ";
+	os << setw(18) << left << subject.numberOfCities << " * ";
+	os << setw(16) << left << subject.square << " * ";
+	os << setw(9) << left << subject.population << " * ";
+	os << setw(28) << left << subject.listOfCities[0].getName() << " *" << endl;
+	i = 1;
+	while ((!subject.listOfCities[i].getName().empty()) && (i < MAXCITIES)) {
+		os << "*       *                    *                    *                  *           * ";
+		os << setw(28) << left << subject.listOfCities[i].getName() << " *" << endl;
+	}
+	os << "*****************************************************************************************************************" << endl;
+}
+
 City& Subject::choosingCity()
 {
 	int i, n, number;
@@ -168,7 +183,8 @@ City& Subject::choosingCity()
 	listOfCities[0].cityTableHeader();
 	i = 0;
 	while (!listOfCities[i].getName().empty()) {
-		listOfCities[i].outputCityToConsole(i);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << listOfCities[i];
 		i++;
 	}
 	n = i + 1;

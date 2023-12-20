@@ -26,7 +26,7 @@ public:
     void setIncome(unsigned long income);
     void setExpenses(unsigned long expenses);
     void setListOfSubjects(Subject subjects[]);
-    string getName();
+    string getName() const;
     int getNumberOfSubjects();
     unsigned long getNetProfitCountryFromCompanies();
     int getPopulation();
@@ -41,6 +41,7 @@ public:
     void inputCountryFromConsole();
     void static countryTableHeader();
     void outputCountryToConsole(int number);
+    friend ostream& operator<<(ostream& os, const Country& country);
     int calculatingProfitsFromCompanies();
     Subject& choosingSubject();
     int comparisonOfTwoCountries(Country* secondCountry);

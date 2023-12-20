@@ -31,7 +31,7 @@ void Continent::setListOfCountries(Country countries[])
 	}
 }
 
-string Continent::getName()
+string Continent::getName() const
 {
 	return name;
 }
@@ -138,6 +138,21 @@ void Continent::outputContinentToConsole(int number)
 	cout << "*******************************************************************************************************\n";
 }
 
+ostream& operator<<(ostream& os, const Continent& continent) {
+	int i;
+	os << setw(18) << left << continent.name << " * ";
+	os << setw(16) << left << continent.numberOfCountries << " * ";
+	os << setw(18) << left << continent.square << " * ";
+	os << setw(30) << left << continent.listOfCountries[0].getName() << " *" << endl;
+	i = 1;
+	while ((!continent.listOfCountries[i].getName().empty()) && (i < MAXCOUNTRIES)) {
+		os << "*       *                    *                  *                    * ";
+		os << setw(30) << left << continent.listOfCountries[i].getName() << " *" << endl;
+		i++;
+	}
+	os << "*******************************************************************************************************\n";
+}
+
 Country& Continent::choosingCountry()
 {
 	int i, n, number;
@@ -145,7 +160,8 @@ Country& Continent::choosingCountry()
 	listOfCountries[0].countryTableHeader();
 	i = 0;
 	while (!listOfCountries[i].getName().empty()) {
-		listOfCountries[i].outputCountryToConsole(i);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << listOfCountries[i];
 		i++;
 	}
 	n = i + 1;

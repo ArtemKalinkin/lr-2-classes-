@@ -18,7 +18,7 @@ public:
     void setNumberOfCountries(int number);
     void setSquare(int square);
     void setListOfCountries(Country countries[]);
-    string getName();
+    string getName() const;
     int getNumberOfCountries();
     int getSquare();
     Country *getListOfCountries();
@@ -28,6 +28,7 @@ public:
     void input—ontinentFromConsole();
     void static continentTableHeader();
     void outputContinentToConsole(int number);
+    friend ostream& operator<<(ostream& os, const Continent& continent);
     Country& choosingCountry();
     void static incrementTotalContinents();
     void static printTotalContinents();

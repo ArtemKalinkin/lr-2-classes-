@@ -29,7 +29,7 @@ void City::setListOfCompanies(Company companies[])
 		listOfCompanies[i] = companies[i];
 }
 
-string City::getName()
+string City::getName() const
 {
 	return name;
 }
@@ -114,7 +114,7 @@ void City::inputCityFromConsole()
 void City::cityTableHeader()
 {
 	cout << "**********************************************************************************************************" << endl;
-	cout << "* Номер *       Город        * Количество предприятий * Население *           Список компаний            *" << endl;
+	cout << "* Номер *       Город        * Количество предприятий * Население *      Список компаний и филиалов      *" << endl;
 	cout << "**********************************************************************************************************" << endl;
 }
 
@@ -133,6 +133,27 @@ void City::outputCityToConsole(int number)
 		i++;
 	}
 	printf("**********************************************************************************************************\n");
+}
+
+ostream& operator<<(ostream& os, const City& city) {
+	int i;
+	os << setw(18) << left << city.name << " * ";
+	os << setw(22) << left << city.numberOfCompanies << " * ";
+	os << setw(9) << left << city.population << " * ";
+	os << setw(36) << left << city.listOfCompanies[0].getName() << " *" << endl;
+	i = 1;
+	while ((!city.listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES)) {
+		os << "*       *                    *                        *           * ";
+		try {
+			const Branch& ref1 = dynamic_cast<const Branch&>(city.listOfCompanies[i]);
+			os << setw(36) << left << city.listOfCompanies[i].getName() + " - филиал" << " *" << endl;
+		}
+		catch (const bad_cast& e){
+			os << setw(36) << left << city.listOfCompanies[i].getName() << " *" << endl;
+		}
+		i++;
+	}
+	os << "**********************************************************************************************************" << endl;
 }
 
 
@@ -175,7 +196,7 @@ City City::operator++(int)
 	int i;
 	City oldCity = *this;
 	Company company;
-	company.inputCompanyFromConsole();
+	company.inputCompanyFromConsole(0);
 	i = 0;
 	while ((!listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES))
 		i++;
@@ -188,7 +209,7 @@ City& City::operator++()
 {
 	int i;
 	Company company;
-	company.inputCompanyFromConsole();
+	company.inputCompanyFromConsole(0);
 	i = 0;
 	while ((!listOfCompanies[i].getName().empty()) && (i < MAXCOMPANIES))
 		i++;

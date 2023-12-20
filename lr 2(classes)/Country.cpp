@@ -60,7 +60,7 @@ void Country::setListOfSubjects(Subject subjects[])
 	}
 }
 
-string Country::getName()
+string Country::getName() const
 {
 	return name;
 }
@@ -256,6 +256,26 @@ void Country::outputCountryToConsole(int number)
 	cout << "**************************************************************************************************************************************************************************************************" << endl;
 }
 
+ostream& operator<<(ostream& os, const Country& country) {
+	int i;
+	os << setw(18) << left << country.name << " * ";
+	os << setw(20) << left << country.numberOfSubjects << " * ";
+	os << setw(14) << left << country.square << " * ";
+	os << setw(9) << left << country.population << " * ";
+	os << setw(19) << left << country.netProfitFromCompanies << " * ";
+	os << setw(14) << left << country.income << " * ";
+	os << setw(15) << left << country.expenses << " * ";
+	os << setw(24) << left << country.budgetDeficitOrSurplus << " * ";
+	os << setw(25) << left << country.listOfSubjects[0].getName() << " *" << endl;
+	i = 1;
+	while ((!country.listOfSubjects[i].getName().empty()) && (i < MAXSUBJECTS)) {
+		os << "*       *                    *                      *                *           *                     *                *                 *                          * ";
+		os << setw(25) << left << country.listOfSubjects[i].getName() << " *" << endl;
+		i++;
+	}
+	os << "**************************************************************************************************************************************************************************************************" << endl;
+}
+
 Subject& Country::choosingSubject()
 {
 	int i, n, number;
@@ -263,7 +283,8 @@ Subject& Country::choosingSubject()
 	listOfSubjects[0].subjectTableHeader();
 	i = 0;
 	while (!listOfSubjects[i].getName().empty()) {
-		listOfSubjects[i].outputSubjectToConsole(i);
+		cout << "* " << setw(5) << left << i + 1 << " * ";
+		cout << listOfSubjects[i];
 		i++;
 	}
 	n = i + 1;
