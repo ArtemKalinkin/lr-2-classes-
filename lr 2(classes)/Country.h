@@ -1,51 +1,44 @@
 #pragma once
 #include "Subject.h"
 #include "supportFunction.h"
+#include "AbstractElement.h"
 
 #define MAXSUBJECTS 5
 
-class Country
+class Country : public AbstractElement
 {
 private:
-    string name;
     int numberOfSubjects;
     unsigned long netProfitFromCompanies;
-    int population;
-    int square;
     unsigned long income;
     unsigned long expenses;
     long budgetDeficitOrSurplus;
     Subject listOfSubjects[MAXSUBJECTS];
     static unsigned totalCountries;
 public:
-    void setName(string name);
     void setNumberOfSubjects(int number);
     void setNetProfitCountryFromCompanies(unsigned long profit);
-    void setPopulation(int population);
-    void setSquare(int square);
     void setIncome(unsigned long income);
     void setExpenses(unsigned long expenses);
     void setListOfSubjects(Subject subjects[]);
-    string getName() const;
     int getNumberOfSubjects();
     unsigned long getNetProfitCountryFromCompanies();
-    int getPopulation();
-    int getSquare();
     unsigned long getIncome();
     unsigned long getExpenses();
     long getBudgetDeficitOrSurplus();
     Subject *getListOfSubjects();
     Country();
     Country(string name);
-    Country(string name, int number, int population, int square, unsigned long income, unsigned long expenses, Subject subjects[]);
-    void inputCountryFromConsole();
+    Country(string name, int number, long population, int square, unsigned long income, unsigned long expenses, Subject subjects[]);
+    void input(string s) override;
     void static countryTableHeader();
     void outputCountryToConsole(int number);
     friend ostream& operator<<(ostream& os, const Country& country);
-    int calculatingProfitsFromCompanies();
+    int calculatingProfitsFromCompanies(int number);
     Subject& choosingSubject();
     int comparisonOfTwoCountries(Country* secondCountry);
     void static incrementTotalCountries();
     void static printTotalCountries();
+    string info() const override;
 };
 

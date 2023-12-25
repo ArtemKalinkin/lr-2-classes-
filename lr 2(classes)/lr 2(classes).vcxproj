@@ -127,8 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AbstractElement.cpp" />
     <ClCompile Include="Branch.cpp" />
     <ClCompile Include="City.cpp" />
+    <ClCompile Include="Container.cpp" />
     <ClCompile Include="Country.cpp" />
     <ClCompile Include="Company.cpp" />
     <ClCompile Include="lr 2(classes).cpp" />
@@ -137,8 +139,10 @@
     <ClCompile Include="Сontinent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbstractElement.h" />
     <ClInclude Include="Branch.h" />
     <ClInclude Include="City.h" />
+    <ClInclude Include="Container.h" />
     <ClInclude Include="Country.h" />
     <ClInclude Include="Company.h" />
     <ClInclude Include="Subject.h" />

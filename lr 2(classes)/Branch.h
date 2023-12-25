@@ -17,5 +17,7 @@ public:
 	virtual void outputCompanyToConsole(int number) override;
 	friend ostream& operator<<(ostream& os, const Branch& branch);
 	Branch& operator=(const Company& other);
+	virtual void performActivity() const override;
+	string info() const override;
 };
 

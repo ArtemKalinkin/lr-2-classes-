@@ -92,6 +92,21 @@ Branch& Branch::operator=(const Company& other)
 	return *this;
 }
 
+void Branch::performActivity() const
+{
+	cout << name << endl;
+	cout << "Краткое описание деятельности филиала компании" << endl;
+	cout << activity << endl;
+	cout << "Количество сотрудников: " << numberOfEmployees << endl;
+	cout << "Статус филиала: " << status << endl;
+}
+
+string Branch::info() const
+{
+	return "Филиал компании: " + name + " - " + status + "филиал. Кол-во сотрудников: " + to_string(numberOfEmployees) + "; " + citySubjectCountry + "; " + to_string(turnoverPerYear) + "; " +
+		to_string(netProfit) + "; " + dateOfFoundation + "; " + industry + ".";
+}
+
 ostream& operator<<(ostream& os, const Branch& branch)
 {
 	os << setw(60) << left << branch.name + " - " + branch.status + "филиал. Кол-во сотрудников: " + to_string(branch.numberOfEmployees) << " * ";
@@ -101,4 +116,5 @@ ostream& operator<<(ostream& os, const Branch& branch)
 	os << setw(32) << left << branch.industry << " * ";
 	os << setw(14) << left << branch.dateOfFoundation << " *" << endl;
 	os << "*****************************************************************************************************************************************************************************" << endl;
+	return os;
 }

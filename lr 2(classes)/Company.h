@@ -1,6 +1,7 @@
 #pragma once
 #include "supportFunction.h"
 
+
 class Company
 {
     friend void compareCompanies(Company* listPtrOfCompanies[], int number);
@@ -40,5 +41,6 @@ public:
     Company& operator=(const Company& other);
     virtual void performActivity() const;
     void callPerformActivity() const;
+    virtual string info() const;
 };
 

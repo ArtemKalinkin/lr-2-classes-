@@ -2,32 +2,12 @@
 
 unsigned Subject::totalSubjects = 0;
 
-void Subject::setName(string name)
-{
-	if (name.empty())
-		throw invalid_argument("Строка не может быть пустой!");
-	this->name = name;
-}
 
 void Subject::setNumberOfCities(int number)
 {
 	if (number < 0)
 		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCities = number;
-}
-
-void Subject::setPopulation(int population)
-{
-	if (population < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->population = population;
-}
-
-void Subject::setSquare(int square)
-{
-	if (square < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->square = square;
 }
 
 void Subject::setListOfCities(City cities[])
@@ -38,24 +18,9 @@ void Subject::setListOfCities(City cities[])
 	}
 }
 
-string Subject::getName() const
-{
-	return name;
-}
-
 int Subject::getNumberOfCities()
 {
 	return numberOfCities;
-}
-
-int Subject::getPopulation()
-{
-	return population;
-}
-
-int Subject::getSquare()
-{
-	return square;
 }
 
 City* Subject::getListOfCities()
@@ -63,11 +28,9 @@ City* Subject::getListOfCities()
 	return listOfCities;
 }
 
-Subject::Subject()
+Subject::Subject() : AbstractElement()
 {
 	numberOfCities = 0;
-	population = 0;
-	square = 0;
 }
 
 Subject::Subject(string name)
@@ -80,20 +43,11 @@ Subject::Subject(string name)
 	square = 0;
 }
 
-Subject::Subject(string name, int number, int population, int square, City cities[])
+Subject::Subject(string name, int number, long population, int square, City cities[]) : AbstractElement(name, population, square)
 {
-	if (name.empty())
-		throw invalid_argument("Строка не может быть пустой!");
-	this->name = name;
 	if (number < 0)
 		throw invalid_argument("Значение не может быть отрицательным!");
 	this->numberOfCities = number;
-	if (population < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->population = population;
-	if (square < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->square = square;
 	for (int i = 0; i < MAXCITIES; i++)
 	{
 		listOfCities[i] = cities[i];
@@ -102,37 +56,14 @@ Subject::Subject(string name, int number, int population, int square, City citie
 
 
 
-void Subject::inputSubjectFromConsole()
+void Subject::input(string s)
 {
 	cout << "\nВВОД СУБЪЕКТА\n" << endl;
-	do {
-		try {
-			cout << "Введите название субъекта:" << endl;
-			getline(cin, name);
-			protectionAgainstIncorrectTextInput(name);
-			break;
-		}
-		catch (const invalid_argument e) {
-			cerr << "Произошла ошибка: " << e.what() << endl;
-		}
-		catch (const length_error e) {
-			cerr << "Произошла ошибка: " << e.what() << endl;
-		}
-	} while (true);
-	cout << "Введите население субъекта:" << endl;
-	while (scanf("%d", &population) != 1) {
-		while (getchar() != '\n');
-		cout << "\nОшибка ввода!\nВведите население субъекта:\n";
-	}
+	AbstractElement::input("субъекта");
 	cout << "Введите количество городов в субъекте:" << endl;
 	while (scanf("%d", &numberOfCities) != 1) {
 		while (getchar() != '\n');
 		cout << "\nОшибка ввода!\nВведите количество городов в субъекте:\n";
-	}
-	cout << "Введите площадь субъекта:" << endl;
-	while (scanf("%d", &square) != 1) {
-		while (getchar() != '\n');
-		cout << "\nОшибка ввода!\nВведите площадь субъекта:\n";
 	}
 	while (getchar() != '\n');
 }
@@ -174,6 +105,7 @@ ostream& operator<<(ostream& os, const Subject& subject) {
 		os << setw(28) << left << subject.listOfCities[i].getName() << " *" << endl;
 	}
 	os << "*****************************************************************************************************************" << endl;
+	return os;
 }
 
 City& Subject::choosingCity()
@@ -205,6 +137,12 @@ void Subject::incrementTotalSubjects()
 void Subject::printTotalSubjects()
 {
 	cout << "Всего вы внесли в список " << totalSubjects << " субъектов" << endl;
+}
+
+string Subject::info() const
+{
+	return "Субъект: " + name + "; " + to_string(population) + "; " + to_string(square) +
+		"; " + to_string(numberOfCities) + ".";
 }
 
 

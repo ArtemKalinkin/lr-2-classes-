@@ -3,13 +3,6 @@
 unsigned Country::totalCountries = 0;
 
 
-void Country::setName(string name)
-{
-	if (name.empty())
-		throw invalid_argument("Строка не может быть пустой!");
-	this->name = name;
-}
-
 void Country::setNumberOfSubjects(int number)
 {
 	if (number < 0)
@@ -22,19 +15,6 @@ void Country::setNetProfitCountryFromCompanies(unsigned long profit)
 	netProfitFromCompanies = profit;
 }
 
-void Country::setPopulation(int population)
-{
-	if (population < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->population = population;
-}
-
-void Country::setSquare(int square)
-{
-	if (square < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->square = square;
-}
 
 void Country::setIncome(unsigned long income)
 {
@@ -60,10 +40,6 @@ void Country::setListOfSubjects(Subject subjects[])
 	}
 }
 
-string Country::getName() const
-{
-	return name;
-}
 
 int Country::getNumberOfSubjects()
 {
@@ -73,16 +49,6 @@ int Country::getNumberOfSubjects()
 unsigned long Country::getNetProfitCountryFromCompanies()
 {
 	return netProfitFromCompanies;
-}
-
-int Country::getPopulation()
-{
-	return population;
-}
-
-int Country::getSquare()
-{
-	return square;
 }
 
 unsigned long Country::getIncome()
@@ -109,29 +75,22 @@ Country::Country()
 {
 	numberOfSubjects = 0;
 	netProfitFromCompanies = 0;
-	population = 0;
-	square = 0;
 	income = 0;
 	expenses = 0;
 	budgetDeficitOrSurplus = 0;
 }
 
-Country::Country(string name)
+Country::Country(string name) : AbstractElement(name)
 {
-	if (name.empty())
-		throw invalid_argument("Строка не может быть пустой!");
-	this->name = name;
 	numberOfSubjects = 0;
 	netProfitFromCompanies = 0;
-	population = 0;
-	square = 0;
 	income = 0;
 	expenses = 0;
 	budgetDeficitOrSurplus = 0;
 }
 
 
-Country::Country(string name, int number, int population, int square, unsigned long income, unsigned long expenses, Subject subjects[])
+Country::Country(string name, int number, long population, int square, unsigned long income, unsigned long expenses, Subject subjects[])
 {
 	if (name.empty())
 		throw invalid_argument("Строка не может быть пустой!");
@@ -156,61 +115,40 @@ Country::Country(string name, int number, int population, int square, unsigned l
 	{
 		listOfSubjects[i] = subjects[i];
 	}
-	this->netProfitFromCompanies = calculatingProfitsFromCompanies();
+	this->netProfitFromCompanies = calculatingProfitsFromCompanies(0);
 }
 
 
 
 
-int Country::calculatingProfitsFromCompanies()
+int Country::calculatingProfitsFromCompanies(int number)
 {
 	int i, j, k;
 	int numberOfProfit = 0;
 	City* city;
-	Company* company;
+	Company** company;
 	for (i = 0; i < MAXSUBJECTS; i++) {
 		city = listOfSubjects[i].getListOfCities();
 		for (j = 0; j < MAXCITIES; j++) {
 			company = city[j].getListOfCompanies();
-			for (k = 0; k < MAXCOMPANIES; k++) {
-				numberOfProfit += company[k].getNetProfit();
+			k = 0;
+			while(company[k] != nullptr){
+				numberOfProfit += company[k]->getNetProfit();
+				k++;
 			}
 		}
 	}
 	return numberOfProfit;
 }
 
-void Country::inputCountryFromConsole()
+void Country::input(string s)
 {
 	puts("\nВВОД СТРАНЫ\n");
-	do {
-		try {
-			cout << "Введите название страны:" << endl;
-			getline(cin, name);
-			protectionAgainstIncorrectTextInput(name);
-			break;
-		}
-		catch (const invalid_argument e) {
-			cerr << "Произошла ошибка: " << e.what() << endl;
-		}
-		catch (const length_error e) {
-			cerr << "Произошла ошибка: " << e.what() << endl;
-		}
-	} while (true);
-	cout << "Введите население страны:" << endl;
-	while (scanf("%d", &population) != 1) {
-		while (getchar() != '\n');
-		cout << "\nОшибка ввода!\nВведите население страны:\n";
-	}
+	AbstractElement::input("страны");
 	cout << "Введите количество субъектов в стране:" << endl;
 	while (scanf("%d", &numberOfSubjects) != 1) {
 		while (getchar() != '\n');
 		cout << "\nОшибка ввода!\nВведите количество субъектов в стране:\n";
-	}
-	cout << "Введите площадь страны:" << endl;
-	while (scanf("%d", &square) != 1) {
-		while (getchar() != '\n');
-		cout << "\nОшибка ввода!\nВведите площадь страны:\n";
 	}
 	cout << "Введите доход страны:" << endl;
 	while (scanf("%d", &income) != 1) {
@@ -274,6 +212,7 @@ ostream& operator<<(ostream& os, const Country& country) {
 		i++;
 	}
 	os << "**************************************************************************************************************************************************************************************************" << endl;
+	return os;
 }
 
 Subject& Country::choosingSubject()
@@ -385,4 +324,10 @@ void Country::incrementTotalCountries()
 void Country::printTotalCountries()
 {
 	cout << "Вы внесли в список " << totalCountries << " из 195 существующих стран" << endl;
+}
+
+string Country::info() const
+{
+	return "Страна: " + name + "; "  + to_string(population) + "; " + to_string(square) +
+		"; " + to_string(numberOfSubjects) + "; " + to_string(netProfitFromCompanies) + "; " + to_string(income) + "; " + to_string(expenses) + "; " + to_string(budgetDeficitOrSurplus) + ".";
 }

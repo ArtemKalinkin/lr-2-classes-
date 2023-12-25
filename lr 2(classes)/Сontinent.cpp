@@ -2,12 +2,6 @@
 
 unsigned Continent::totalContinents = 0;
 
-void Continent::setName(string name)
-{
-	if (name.empty())
-		throw invalid_argument("Строка не может быть пустой!");
-	this->name = name;
-}
 
 void Continent::setNumberOfCountries(int number)
 {
@@ -16,12 +10,6 @@ void Continent::setNumberOfCountries(int number)
 	numberOfCountries = number;
 }
 
-void Continent::setSquare(int square)
-{
-	if (square < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->square = square;
-}
 
 void Continent::setListOfCountries(Country countries[])
 {
@@ -31,52 +19,33 @@ void Continent::setListOfCountries(Country countries[])
 	}
 }
 
-string Continent::getName() const
-{
-	return name;
-}
 
 int Continent::getNumberOfCountries()
 {
 	return numberOfCountries;
 }
 
-int Continent::getSquare()
-{
-	return square;
-}
 
 Country* Continent::getListOfCountries()
 {
 	return listOfCountries;
 }
 
-Continent::Continent()
+Continent::Continent() : AbstractElement()
 {
 	numberOfCountries = 0;
-	square = 0;
 }
 
-Continent::Continent(string name)
+Continent::Continent(string name) : AbstractElement(name)
 {
-	if (name.empty())
-		throw invalid_argument("Строка не может быть пустой!");
-	this->name = name;
 	numberOfCountries = 0;
-	square = 0;
 }
 
-Continent::Continent(string name, int number, int square, Country countries[])
+Continent::Continent(string name, int number, long population, int square, Country countries[]) : AbstractElement(name, population, square)
 {
-	if (name.empty())
-		throw invalid_argument("Строка не может быть пустой!");
-	this->name = name;
 	if (number < 0)
 		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCountries = number;
-	if (square < 0)
-		throw invalid_argument("Значение не может быть отрицательным!");
-	this->square = square;
 	for (int i = 0; i < MAXCOUNTRIES; i++)
 	{
 		listOfCountries[i] = countries[i];
@@ -84,41 +53,24 @@ Continent::Continent(string name, int number, int square, Country countries[])
 }
 
 
-void Continent::inputСontinentFromConsole()
+void Continent::input(string s)
 {
 	puts("ВВОД КОНТИНЕНТА\n");
-	do {
-		try {
-			cout << "Введите название континента:" << endl;
-			getline(cin, name);
-			protectionAgainstIncorrectTextInput(name);
-			break;
-		}
-		catch (const invalid_argument e) {
-			cerr << "Произошла ошибка: " << e.what() << endl;
-		}
-		catch (const length_error e) {
-			cerr << "Произошла ошибка: " << e.what() << endl;
-		}
-	} while (true);
+	AbstractElement::input("континента");
 	cout << "Введите количество стран на континенте:" << endl;
 	while (scanf("%d", &numberOfCountries) != 1) {
 		while (getchar() != '\n');
 		cout << "\nОшибка ввода!\nВведите количество стран на континенте:\n";
 	}
-	cout << "Введите площадь континента (в кв. км):" << endl;
-	while (scanf("%d", &square) != 1) {
-		while (getchar() != '\n');
-		cout << "\nОшибка ввода!\nВведите площадь континента (в кв. км):\n";
-	}
 	while (getchar() != '\n');
+	
 }
 
 void Continent::continentTableHeader()
 {
-	cout << "*******************************************************************************************************\n";
-	cout << "* Номер *     Континент      * Количество стран * Площадь континента *          Список стран          *\n";
-	cout << "*******************************************************************************************************\n";
+	cout << "*********************************************************************************************************************\n";
+	cout << "* Номер *     Континент      * Количество стран * Площадь континента *  Население  *          Список стран          *\n";
+	cout << "*********************************************************************************************************************\n";
 }
 
 void Continent::outputContinentToConsole(int number)
@@ -135,7 +87,7 @@ void Continent::outputContinentToConsole(int number)
 		cout << setw(30) << left << listOfCountries[i].getName() << " *" << endl;
 		i++;
 	}
-	cout << "*******************************************************************************************************\n";
+	cout << "*********************************************************************************************************************\n";
 }
 
 ostream& operator<<(ostream& os, const Continent& continent) {
@@ -143,14 +95,16 @@ ostream& operator<<(ostream& os, const Continent& continent) {
 	os << setw(18) << left << continent.name << " * ";
 	os << setw(16) << left << continent.numberOfCountries << " * ";
 	os << setw(18) << left << continent.square << " * ";
+	os << setw(11) << left << continent.population << " * ";
 	os << setw(30) << left << continent.listOfCountries[0].getName() << " *" << endl;
 	i = 1;
 	while ((!continent.listOfCountries[i].getName().empty()) && (i < MAXCOUNTRIES)) {
-		os << "*       *                    *                  *                    * ";
+		os << "*       *                    *                  *                    *             * ";
 		os << setw(30) << left << continent.listOfCountries[i].getName() << " *" << endl;
 		i++;
 	}
-	os << "*******************************************************************************************************\n";
+	os << "*********************************************************************************************************************\n";
+	return os;
 }
 
 Country& Continent::choosingCountry()
@@ -182,6 +136,12 @@ void Continent::incrementTotalContinents()
 void Continent::printTotalContinents()
 {
 	cout << "Вы внесли в список " << totalContinents << " из 6 существующих континетов" << endl;
+}
+
+string Continent::info() const
+{
+	return "Континент: " + name + "; " + to_string(population) + "; " + to_string(square) +
+		"; " + to_string(numberOfCountries) + ".";
 }
 
 
