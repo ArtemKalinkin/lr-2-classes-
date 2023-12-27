@@ -4,22 +4,28 @@
 #include "supportFunction.h"
 #include "AbstractElement.h"
 
-#define MAXCOMPANIES 5
+#define MAXCOMPANIES 15
 
 class City : public AbstractElement
 {
 private:
     int numberOfCompanies;
-    Company *listOfCompanies[MAXCOMPANIES];
+    vector<Company*> listOfCompanies;
     static unsigned totalCities;
 public:
+    enum class CityCompareField {
+        NAME,
+        POPULATION,
+        SQUARE,
+        NUMBEROFCOMPANIES
+    };
     void setNumberOfCompanies(int number);
-    void setListOfCompanies(Company *companies[]);
+    void setListOfCompanies(vector<Company*> companies);
     int getNumberOfCompanies();
-    Company** getListOfCompanies();
+    vector<Company*> &getListOfCompanies();
     City();
     City(string name);
-    City(string name, long popilation, int square, int number, Company *companies[]);
+    City(string name, long popilation, int square, int number, vector<Company*> companies);
     void input(string s) override;
     void static cityTableHeader();
     void outputCityToConsole(int number);
@@ -30,5 +36,9 @@ public:
     City operator ++(int);
     City& operator ++();
     string info() const override;
+    City(const City& other);
+    bool compareByField(const City& other, CityCompareField field) const;
+    int static selectSortingCriteria();
+    void sortCompanies(int criteria);
 };
 

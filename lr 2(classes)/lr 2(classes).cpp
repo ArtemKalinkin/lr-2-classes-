@@ -12,56 +12,52 @@
 #include "supportFunction.h"
 #include "Container.h"
 #include <memory>
+#include <algorithm>
 
 #define MAXCONTINENTS 6
 
 
-void inputAllClasses(Continent continents[]);
+void inputAllClasses(vector<Continent> &continents);
 int menuOutput();
-Continent& choosingContinent(Continent continents[]);
-void outputStm(Continent* continets, int number);
-int searchCompanies(Company* listPtrOfCompanies[], Continent continents[]);
-void mergerOfCompanies(Continent listOfcontinents[]);
+Continent& choosingContinent(vector<Continent>& continents);
+void outputStm(vector<Continent> continets, int number);
+int searchCompanies(Company* listPtrOfCompanies[], vector<Continent> continents);
+void mergerOfCompanies(vector<Continent> &listOfContinents);
 int yesOrNo(string s);
-void workWithArrays();
-void qSort(Company companies[], int nStart, int nEnd);
-void infoActivityOfCompanies(Company** listOfCompanies);
-City cityForInfoActivityOfCompanies(Continent *continents);
-void searchSomethingWithSameName(Continent* listOfContinents);
+void qSort(vector<Company*> &companies, int nStart, int nEnd);
+void infoActivityOfCompanies(vector<Company*> listOfCompanies);
+City *cityForInfoActivityOfCompanies(vector<Continent> &continents);
+void searchSomethingWithSameName(vector<Continent> listOfContinents);
+void sortAnyList(vector<Continent>& continents);
+void sortContinents(vector<Continent>& continents, int criteria);
 
-Continent listOfContinents[6];
 
 int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	setlocale(LC_ALL, "Rus");
+	vector<Continent> listOfContinents;
 	int number;
 	int i, n;
 	int numberFirst, numberSecond;
 	Company* listOfPtrCompanies[MAXCOMPANIES];
-	string name;
-	string address;
-	string industry;
-	string date;
-	Country* countries;
+	vector<Country> countries;
 	Country* theCountryOne;
 	Country* theCountryTwo;
 	Continent continent;
 	inputAllClasses(listOfContinents);
 	number = menuOutput();
 	outputStm(listOfContinents, number);
-	City infoCity = cityForInfoActivityOfCompanies(listOfContinents);
-	infoActivityOfCompanies(infoCity.getListOfCompanies());
-	searchSomethingWithSameName(listOfContinents);
+	sortAnyList(listOfContinents);
 	cout << "\n\n\n\nСРАВНЕНИЕ ДВУХ СТРАН\n" << endl;
 	continent = choosingContinent(listOfContinents);
 	countries = continent.getListOfCountries();
 	i = 0;
-	countries[0].countryTableHeader();
-	while ((!countries[i].getName().empty()) && (i < MAXCOUNTRIES)) {
+	Country::countryTableHeader();
+	while (i < countries.size()) {
 		cout << "* " << setw(5) << left << i + 1 << " * ";
-		cout << countries[i];
+		cout << countries.at(i);
 		i++;
 	}
 	n = i;
@@ -118,35 +114,41 @@ int main()
 }
 
 //Функция ввода всех списков
-void inputAllClasses(Continent continents[])
+void inputAllClasses(vector<Continent> &continents)
 {
 	int i, j, k, x, z;
 	int number;
 	string address;
-	Country* countries;
-	Subject* subjects;
-	City* cities;
-	Company** companies;
+	Continent* continent = new Continent();
+	Country* country = new Country();
+	Subject* subject = new Subject();
+	City* city = new City();
+	Company* company;
+	Branch* branch;
+	vector<Country> countries;
+	vector<Subject> subjects;
+	vector<City> cities;
+	vector<Company*> companies;
 	i = 0;
 	do {
-		continents[i].input("континента");
-		countries = continents[i].getListOfCountries();
+		continent->input("континента");
+		continents.push_back(*continent);
 		j = 0;
 		do {
-			countries[j].input("страны");
-			subjects = countries[j].getListOfSubjects();
+			country->input("страны");
+			countries.push_back(*country);
 			k = 0;
 			do {
-				subjects[k].input("субъекта");
-				cities = subjects[k].getListOfCities();
+				subject->input("субъекта");
+				subjects.push_back(*subject);
 				x = 0;
 				do {
-					cities[x].input("города");
-					companies = cities[x].getListOfCompanies();
-					address = countries[j].getName() + ", " + subjects[k].getName() + ", " + cities[x].getName();
+					city->input("города");
+					cities.push_back(*city);
+					address = countries.at(j).getName() + ", " + subjects.at(k).getName() + ", " + cities.at(x).getName();
 					z = 0;
 					do {
-						cout << "1.Ввод компании" << endl;
+						cout << "\n\n\n1.Ввод компании" << endl;
 						cout << "2.Ввод филиала компании" << endl;
 						do {
 							cout << "Введите номер действия: ";
@@ -156,16 +158,18 @@ void inputAllClasses(Continent continents[])
 						} while ((number > 2) || (number < 1));
 						while (getchar() != '\n');
 						if (number == 1) {
-							companies[z] = new Company();
-							companies[z]->inputCompanyFromConsole(0);
+							company = new Company();
+							company->inputCompanyFromConsole(0);
+							companies.push_back(company);
 							Company::incrementTotalCompanies();
 						}
 						else {
-							companies[z] = new Branch();
-							companies[z]->inputCompanyFromConsole(1);
+							branch = new Branch();
+							branch->inputCompanyFromConsole(1);
+							companies.push_back(branch);
 						}
 						try {
-							companies[z]->setcitySubjectCountry(address);
+							companies.at(z)->setcitySubjectCountry(address);
 						}
 						catch (const invalid_argument e) {
 							cerr << "Произошла ошибка: " << e.what() << endl;
@@ -178,6 +182,7 @@ void inputAllClasses(Continent continents[])
 							cout << "Для продолжения любую другую клавишу.\n" << endl;
 						}
 					} while ((_getch() != 27) && (z < MAXCOMPANIES));
+					cities.at(x).setListOfCompanies(companies);
 					x++;
 					City::incrementTotalCities();
 					if (x == MAXCITIES)
@@ -187,6 +192,8 @@ void inputAllClasses(Continent continents[])
 						cout << "Для продолжения любую другую клавишу.\n" << endl;
 					}
 				} while ((_getch() != 27) && (x < MAXCITIES));
+				subjects.at(k).setListOfCities(cities);
+				cities.clear();
 				k++;
 				Subject::incrementTotalSubjects();
 				if (k == MAXSUBJECTS)
@@ -196,7 +203,9 @@ void inputAllClasses(Continent continents[])
 					cout << "Для продолжения любую другую клавишу.\n" << endl;
 				}
 			} while ((_getch() != 27) && (k < MAXSUBJECTS));
-			countries[j].setNetProfitCountryFromCompanies(countries[j].calculatingProfitsFromCompanies(z));
+			countries.at(j).setListOfSubjects(subjects);
+			subjects.clear();
+			countries.at(j).setNetProfitCountryFromCompanies(countries.at(j).calculatingProfitsFromCompanies(z));
 			j++;
 			Country::incrementTotalCountries();
 			if (j == MAXCOUNTRIES)
@@ -206,6 +215,8 @@ void inputAllClasses(Continent continents[])
 				cout << "Для продолжения любую другую клавишу.\n" << endl;
 			}
 		} while ((_getch() != 27) && (j < MAXCOUNTRIES));
+		continents.at(i).setListOfCountries(countries);
+		countries.clear();
 		i++;
 		Continent::incrementTotalContinents();
 		if (i == MAXCONTINENTS)
@@ -215,18 +226,22 @@ void inputAllClasses(Continent continents[])
 			cout << "Для продолжения любую другую клавишу.\n" << endl;
 		}
 	} while ((_getch() != 27) && (i < MAXCONTINENTS));
+	delete continent;
+	delete country;
+	delete subject;
+	delete city;
 }
 
 
 // Функция выбора континента 
-Continent& choosingContinent(Continent continents[]) {
+Continent& choosingContinent(vector<Continent>& continents) {
 	int i, n, number;
 	char character;
-	continents[0].continentTableHeader();
+	Continent::continentTableHeader();
 	i = 0;
-	while ((!continents[i].getName().empty()) && (i < MAXCONTINENTS)) {
+	while (i < continents.size()) {
 		cout << "* " << setw(5) << left << i + 1 << " * ";
-		cout << continents[i];
+		cout << continents.at(i);
 		i++;
 	}
 	n = i;
@@ -239,13 +254,13 @@ Continent& choosingContinent(Continent continents[]) {
 }
 
 // Функция вывода списков
-void outputStm(Continent* continets, int number)
+void outputStm(vector<Continent> continents, int number)
 {
 	int i;
-	Country* countries;
-	Subject* subjects;
-	City* cities;
-	Company** companies;
+	vector<Country> countries;
+	vector<Subject> subjects;
+	vector<City> cities;
+	vector<Company*> companies;
 	Continent continent;
 	Country country;
 	Subject subject;
@@ -255,59 +270,58 @@ void outputStm(Continent* continets, int number)
 	case 1:
 		i = 0;
 		Continent::continentTableHeader();
-		while ((!continets[i].getName().empty()) && (i < MAXCONTINENTS)) {
+		while (i < continents.size()) {
 			cout << "* " << setw(5) << left << i + 1 << " * ";
-			cout << continets[i];
+			cout << continents.at(i);
 			i++;
 		}
 		break;
 	case 2:
-		continent = choosingContinent(continets);
+		continent = choosingContinent(continents);
 		countries = continent.getListOfCountries();
 		i = 0;
 		Country::countryTableHeader();
-		while ((!countries[i].getName().empty()) && (i < MAXCOUNTRIES)) {
+		while (i < countries.size()) {
 			cout << "* " << setw(5) << left << i + 1 << " * ";
-			cout << countries[i];
+			cout << countries.at(i);
 			i++;
 		}
 		break;
 	case 3:
-		continent = choosingContinent(continets);
+		continent = choosingContinent(continents);
 		country = continent.choosingCountry();
 		subjects = country.getListOfSubjects();
 		i = 0;
 		Subject::subjectTableHeader();
-		while ((!subjects[i].getName().empty()) && (i < MAXSUBJECTS)) {
+		while (i < subjects.size()) {
 			cout << "* " << setw(5) << left << i + 1 << " * ";
-			cout << subjects[i];
+			cout << subjects.at(i);
 			i++;
 		}
 		break;
 	case 4:
-		continent = choosingContinent(continets);
+		continent = choosingContinent(continents);
 		country = continent.choosingCountry();
 		subject = country.choosingSubject();
 		cities = subject.getListOfCities();
 		i = 0;
 		City::cityTableHeader();
-		while ((!cities[i].getName().empty()) && (i < MAXCITIES)) {
+		while (i < cities.size()) {
 			cout << "* " << setw(5) << left << i + 1 << " * ";
-			cout << cities[i];
+			cout << cities.at(i);
 			i++;
 		}
 		break;
 	case 5:
-		continent = choosingContinent(continets);
+		continent = choosingContinent(continents);
 		country = continent.choosingCountry();
 		subject = country.choosingSubject();
 		city = subject.choosingCity();
 		companies = city.getListOfCompanies();
 		i = 0;
 		Company::companyTableHeader();
-		while ((companies[i] != nullptr) && (i < MAXCOMPANIES)) {
-			cout << "* " << setw(5) << left << i + 1 << " * ";
-			cout << (*companies[i]);
+		while (i < companies.size()) {
+			companies.at(i)->outputCompanyToConsole(i);
 			i++;
 		}
 		break;
@@ -316,14 +330,14 @@ void outputStm(Continent* continets, int number)
 	}
 }
 
-int searchCompanies(Company* listPtrOfCompanies[], Continent continents[])
+int searchCompanies(Company* listPtrOfCompanies[], vector<Continent> continents)
 {
 	int i, j, k, x, z;
 	int number;
-	Country* countries;
-	Subject* subjects;
-	City* cities;
-	Company** companies;
+	vector<Country> countries;
+	vector<Subject> subjects;
+	vector<City> cities;
+	vector<Company*> companies;
 	string industry;
 	while (getchar() != '\n');
 	do {
@@ -332,21 +346,21 @@ int searchCompanies(Company* listPtrOfCompanies[], Continent continents[])
 	} while (protectionAgainstIncorrectTextInput(industry));
 	number = 0;
 	i = 0;
-	while ((!continents[i].getName().empty()) && (i < MAXCONTINENTS)) {
+	while (i < continents.size()) {
 		j = 0;
-		countries = continents[i].getListOfCountries();
-		while ((!countries[j].getName().empty()) && (j < MAXCOUNTRIES)) {
+		countries = continents.at(i).getListOfCountries();
+		while (j < countries.size()) {
 			k = 0;
-			subjects = countries[j].getListOfSubjects();
-			while ((!subjects[k].getName().empty()) && (k < MAXSUBJECTS)) {
+			subjects = countries.at(j).getListOfSubjects();
+			while (k < subjects.size()) {
 				x = 0;
-				cities = subjects[k].getListOfCities();
-				while ((!cities[x].getName().empty()) && (x < MAXCITIES)) {
+				cities = subjects.at(k).getListOfCities();
+				while (x < cities.size()) {
 					z = 0;
 					companies = cities[x].getListOfCompanies();
-					while ((companies[z] != nullptr) && (z < MAXCOMPANIES)) {
-						if (!industry.compare(companies[z]->getIndustry())) {
-							listPtrOfCompanies[number] = companies[z];
+					while (z < companies.size()) {
+						if (!industry.compare(companies.at(z)->getIndustry())) {
+							listPtrOfCompanies[number] = companies.at(z);
 							number++;
 						}
 						z++;
@@ -364,31 +378,31 @@ int searchCompanies(Company* listPtrOfCompanies[], Continent continents[])
 	return number;
 }
 
-void mergerOfCompanies(Continent listOfcontinents[])
+void mergerOfCompanies(vector<Continent> &listOfcontinents)
 {
 	int i, j, k, x, z;
 	int number = 0;
 	int numberOne, numberTwo;
-	Country* countries;
-	Subject* subjects;
-	City* cities;
-	Company** companies;
+	vector<Country> countries;
+	vector<Subject> subjects;
+	vector<City> cities;
+	vector<Company*> companies;
 	Company* listPtrOfCompanies[100];
 	i = 0;
-	while ((!listOfcontinents[i].getName().empty()) && (i < MAXCONTINENTS)) {
+	while (i < listOfcontinents.size()) {
 		j = 0;
-		countries = listOfcontinents[i].getListOfCountries();
-		while ((!countries[j].getName().empty()) && (j < MAXCOUNTRIES)) {
+		countries = listOfcontinents.at(i).getListOfCountries();
+		while (j < countries.size()) {
 			k = 0;
-			subjects = countries[j].getListOfSubjects();
-			while ((!subjects[k].getName().empty()) && (k < MAXSUBJECTS)) {
+			subjects = countries.at(j).getListOfSubjects();
+			while (k < subjects.size()) {
 				x = 0;
-				cities = subjects[k].getListOfCities();
-				while ((!cities[x].getName().empty()) && (x < MAXCITIES)) {
+				cities = subjects.at(k).getListOfCities();
+				while (x < cities.size()) {
 					z = 0;
-					companies = cities[x].getListOfCompanies();
-					while ((!companies[z]->getName().empty()) && (z < MAXCOMPANIES)) {
-						listPtrOfCompanies[number] = companies[z];
+					companies = cities.at(x).getListOfCompanies();
+					while (z < companies.size()) {
+						listPtrOfCompanies[number] = companies.at(z);
 						number++;
 						z++;
 					}
@@ -440,49 +454,17 @@ int yesOrNo(string s)
 		return 0;
 }
 
-void workWithArrays()
-{
-	Company companiesOne[16];
-	Company companiesTwo[4][4];
-	int k = 0;
-	cout << "Ввод барнаульских компаний" << endl;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			companiesTwo[i][j].inputCompanyFromConsole(0);
-			companiesTwo[i][j].setcitySubjectCountry("Россия, Алтайский край, Барнаул");
-			companiesOne[k] = companiesTwo[i][j];
-			k++;
-		}
-	}
-	cout << "\n\nСписок до сортировки:\n" << endl;
-	Company::companyTableHeader();
-	k = 0;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			cout << "* " << setw(5) << left << k + 1 << " * ";
-			cout << companiesTwo[i][j];
-			k++;
-		}
-	}
-	qSort(companiesOne, 0, 15);
-	cout << "\n\nСписок после сортировки:\n" << endl;
-	Company::companyTableHeader();
-	for (int i = 0; i < 16; i++) {
-		cout << "* " << setw(5) << left << i + 1 << " * ";
-		cout << companiesOne[i];
-	}
-}
 
-void qSort(Company companies[], int nStart, int nEnd)
+void qSort(vector<Company*> &companies, int nStart, int nEnd)
 {
 	int left, right, x;
-	Company temp;
+	Company* temp;
 	if (nStart >= nEnd) return; 
 	left = nStart; right = nEnd;
-	x = companies[(left + right) / 2].getNetProfit();
+	x = companies[(left + right) / 2]->getNetProfit();
 	while (left <= right) {         
-		while (companies[left].getNetProfit() < x) left++;
-		while (companies[right].getNetProfit() > x) right--;
+		while (companies[left]->getNetProfit() < x) left++;
+		while (companies[right]->getNetProfit() > x) right--;
 		if (left <= right) {
 			temp = companies[left];
 			companies[left] = companies[right];
@@ -494,21 +476,20 @@ void qSort(Company companies[], int nStart, int nEnd)
 	qSort(companies, left, nEnd);
 }
 
-void infoActivityOfCompanies(Company** listOfCompanies)
+void infoActivityOfCompanies(vector<Company*> listOfCompanies)
 {
 	int n, number;
-	int i = 0;
+	vector<Company*>::iterator it;
 	do {
+		int n = 0;
 		Company::companyTableHeader();
-		while (listOfCompanies[i] != nullptr) {
-			cout << "* " << setw(5) << left << i + 1 << " * ";
-			cout << *listOfCompanies[i];
-			i++;
+		for (it = listOfCompanies.begin(); it != listOfCompanies.end(); ++it) {
+			(*it)->outputCompanyToConsole(n);
+			n++;
 		}
-		if (i == 0)
+		if (n == 0)
 			cout << "Данный список пуст" << endl;
 		else {
-			n = i + 1;
 			do {
 				cout << "\nВведите номер компании или филиала: ";
 				cin >> number;
@@ -516,7 +497,7 @@ void infoActivityOfCompanies(Company** listOfCompanies)
 					cout << "Такого номера нет в списке!" << endl;
 			} while ((number > n) || (number < 1));
 			cout << endl << endl;
-			listOfCompanies[number - 1]->callPerformActivity();
+			listOfCompanies.at(number - 1)->callPerformActivity();
 		}
 		cout << "Для завершения получения информации нажмите Esc" << endl;
 		cout << "Для продолжения любую другую клавишу" << endl;
@@ -526,7 +507,7 @@ void infoActivityOfCompanies(Company** listOfCompanies)
 	// и производного классов после присваивания
 	string activityOfCompany = "Компания Гул — ведущий игрок в сфере пищевой промышленности, специализирующийся на создании и производстве высококачественных пищевых продуктов. Наша миссия заключается в предоставлении потребителям вкусных и инновационных продуктов, отвечающих самым высоким стандартам качества и безопасности.";
 	string activityOfBranch = "Филиал компании Гул, расположенный в регионе, специализируется на производстве эксклюзивных деликатесов и гурманских продуктов высочайшего качества. Наш фокус направлен на уникальные рецептуры и ингредиенты, чтобы удовлетворять взыскательные вкусы наших клиентов в данном регионе";
-	Company *company = new Company("ООО \"Гул\"", "Россия, Алтайский край, Барнаул", 140000000, 3200000, "22.11.2008", "Пищевая промышленность", activityOfCompany);
+	Company* company = new Company("ООО \"Гул\"", "Россия, Алтайский край, Барнаул", 140000000, 3200000, "22.11.2008", "Пищевая промышленность", activityOfCompany);
 	Branch* branch = new Branch("\"Гул\"", "Россия, Алтайский край, Бийск", 20000000, 9000000, "13.08.2014", "Пищевая промышленность", activityOfBranch, "активный", 15);
 	Company* ptrCompany;
 	// Указатель на объект базового класса
@@ -541,32 +522,32 @@ void infoActivityOfCompanies(Company** listOfCompanies)
 	delete branch;
 }
 
-City cityForInfoActivityOfCompanies(Continent *continents)
+City *cityForInfoActivityOfCompanies(vector<Continent> &continents)
 {
 	cout << endl << endl << endl;
 	cout << "ВЫБОР ГОРОДА ДЛЯ ПОЛУЧЕНИЯ ИНОФРМАЦИИ О ДЕЯТЕЛЬНОСТИ КОМПАНИЙ\\ФИЛИАЛОВ" << endl << endl;
-	Continent continent;
-	Country country;
-	Subject subject;
-	City city;
-	continent = choosingContinent(continents);
-	country = continent.choosingCountry();
-	subject = country.choosingSubject();
-	city = subject.choosingCity();
+	Continent *continent;
+	Country *country;
+	Subject *subject;
+	City *city;
+	continent = &choosingContinent(continents);
+	country = &continent->choosingCountry();
+	subject = &country->choosingSubject();
+	city = &subject->choosingCity();
 	return city;
 }
 
-void searchSomethingWithSameName(Continent* listOfContinents)
+void searchSomethingWithSameName(vector<Continent> listOfContinents)
 {
 	cout << "ПОИСК ЧЕГО-ЛИБО" << endl << endl;
 	int i, j, k, z, x;
 	Container<AbstractElement> container;
 	Container<Company> companyContainer;
 	int number, numberCompany;
-	Country* countries;
-	Subject* subjects;
-	City* cities;
-	Company** companies;
+	vector<Country> countries;
+	vector<Subject> subjects;
+	vector<City> cities;
+	vector<Company*> companies;
 	string searchName;
 	while (getchar() != '\n');
 	cout << "Поиск элементов с одинаковыми названиями" << endl << endl;
@@ -577,37 +558,37 @@ void searchSomethingWithSameName(Continent* listOfContinents)
 	number = 0;
 	numberCompany = 0;
 	i = 0;
-	while ((!listOfContinents[i].getName().empty()) && (i < MAXCONTINENTS)) {
+	while (i < listOfContinents.size()) {
 		j = 0;
-		if (!searchName.compare(listOfContinents[i].getName())) {
-			container.addElement(&listOfContinents[i]);
+		if (!searchName.compare(listOfContinents.at(i).getName())) {
+			container.addElement(&listOfContinents.at(i));
 			number++;
 		}
-		countries = listOfContinents[i].getListOfCountries();
-		while ((!countries[j].getName().empty()) && (j < MAXCOUNTRIES)) {
+		countries = listOfContinents.at(i).getListOfCountries();
+		while (j < countries.size()) {
 			k = 0;
-			if (!searchName.compare(countries[j].getName())) {
-				container.addElement(&countries[j]);
+			if (!searchName.compare(countries.at(j).getName())) {
+				container.addElement(&countries.at(j));
 				number++;
 			}
-			subjects = countries[j].getListOfSubjects();
-			while ((!subjects[k].getName().empty()) && (k < MAXSUBJECTS)) {
+			subjects = countries.at(j).getListOfSubjects();
+			while (k < subjects.size()) {
 				x = 0;
-				if (!searchName.compare(subjects[k].getName())) {
-					container.addElement(&subjects[k]);
+				if (!searchName.compare(subjects.at(k).getName())) {
+					container.addElement(&subjects.at(k));
 					number++;
 				}
-				cities = subjects[k].getListOfCities();
-				while ((!cities[x].getName().empty()) && (x < MAXCITIES)) {
+				cities = subjects.at(k).getListOfCities();
+				while (x < cities.size()) {
 					z = 0;
-					if (!searchName.compare(cities[x].getName())) {
-						container.addElement(&cities[x]);
+					if (!searchName.compare(cities.at(x).getName())) {
+						container.addElement(&cities.at(x));
 						number++;
 					}
-					companies = cities[x].getListOfCompanies();
-					while ((companies[z] != nullptr) && (z < MAXCOMPANIES)) {
-						if (!searchName.compare(companies[z]->getName())) {
-							companyContainer.addElement(companies[z]);
+					companies = cities.at(x).getListOfCompanies();
+					while (z < companies.size()) {
+						if (!searchName.compare(companies.at(z)->getName())) {
+							companyContainer.addElement(companies.at(z));
 							numberCompany++;
 						}
 						z++;
@@ -626,6 +607,175 @@ void searchSomethingWithSameName(Continent* listOfContinents)
 		cout << "Найденные элементы" << endl;
 		container.displayElements();
 		companyContainer.displayElements();
+	}
+}
+
+void sortAnyList(vector<Continent>& continents)
+{
+	cout << endl << endl << endl << "СОРТИРОВКА СПИСКОВ" << endl << endl << endl;
+	int number, i;
+	int criteria;
+	Continent* continent;
+	Country* country;
+	Subject* subject;
+	City* city;
+	cout << "1. Список континентов" << endl;
+	cout << "2. Список стран" << endl;
+	cout << "3. Список субъектов" << endl;
+	cout << "4. Список городов" << endl;
+	cout << "5. Список компаний" << endl;
+	do {
+		cout << endl << "Введите номер того, что хотите отсортировать: ";
+		cin >> number;
+		if ((number < 1) || (number > 5))
+			cout << "Действия под данным номером нет" << endl;
+	} while ((number < 1) || (number > 5));
+	while (getchar() != '\n');
+	switch (number)
+	{
+	case 1:
+		criteria = Continent::selectSortingCriteria();
+		sortContinents(continents, criteria);
+		cout << endl << "Отсортированный список континентов: " << endl << endl;
+		i = 0;
+		Continent::continentTableHeader();
+		while (i < continents.size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << continents.at(i);
+			i++;
+		}
+		break;
+	case 2:
+		continent = &choosingContinent(continents);
+		criteria = Country::selectSortingCriteria();
+		continent->sortCountries(criteria);
+		cout << endl << "Отсортированный список стран: " << endl << endl;
+		i = 0;
+		Country::countryTableHeader();
+		while (i < continent->getListOfCountries().size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << continent->getListOfCountries().at(i);
+			i++;
+		}
+		break;
+	case 3:
+		continent = &choosingContinent(continents);
+		country = &continent->choosingCountry();
+		criteria = Subject::selectSortingCriteria();
+		country->sortSubjects(criteria);
+		cout << endl << "Отсортированный список субъектов: " << endl << endl;
+		i = 0;
+		Subject::subjectTableHeader();
+		while (i < country->getListOfSubjects().size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << country->getListOfSubjects().at(i);
+			i++;
+		}
+		break;
+	case 4:
+		continent = &choosingContinent(continents);
+		country = &continent->choosingCountry();
+		subject = &country->choosingSubject();
+		criteria = City::selectSortingCriteria();
+		subject->sortCities(criteria);
+		cout << endl << "Отсортированный список городов: " << endl << endl;
+		i = 0;
+		City::cityTableHeader();
+		while (i < subject->getListOfCities().size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << subject->getListOfCities().at(i);
+			i++;
+		}
+		break;
+	case 5:
+		continent = &choosingContinent(continents);
+		country = &continent->choosingCountry();
+		subject = &country->choosingSubject();
+		city = &subject->choosingCity();
+		criteria = Company::selectSortingCriteria();
+		city->sortCompanies(criteria);
+		cout << endl << "Отсортированный список компаний: " << endl << endl;
+		i = 0;
+		Company::companyTableHeader();
+		while (i < city->getListOfCompanies().size()) {
+			city->getListOfCompanies().at(i)->outputCompanyToConsole(i);
+			i++;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void sortContinents(vector<Continent>& continents, int criteria)
+{
+	vector<Continent*> continentPointers;
+	for (Continent& continent : continents) {
+		continentPointers.push_back(&continent);
+	}
+	int number;
+	cout << endl << "Спрособ упорядочивания" << endl;
+	cout << "1.По возрастанию" << endl;
+	cout << "2.По убыванию" << endl;
+	do {
+		cout << "Введите номер";
+		cin >> number;
+		if ((number < 1) || (number > 2))
+			cout << "Введите 1 или 2" << endl;
+	} while (number < 1 || (number > 2));
+	if (number == 1) {
+		switch (criteria)
+		{
+		case 1:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return a->compareByField(*b, Continent::ContinentCompareField::NAME);
+				});
+			break;
+		case 2:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return a->compareByField(*b, Continent::ContinentCompareField::SQUARE);
+				});
+			break;
+		case 3:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return a->compareByField(*b, Continent::ContinentCompareField::POPULATION);
+				});
+			break;
+		case 4:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return a->compareByField(*b, Continent::ContinentCompareField::NUMBEROFCOUNTRIES);
+				});
+			break;
+		default:
+			break;
+		}
+	}
+	else {
+		switch (criteria)
+		{
+		case 1:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return b->compareByField(*a, Continent::ContinentCompareField::NAME);
+				});
+			break;
+		case 2:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return b->compareByField(*a, Continent::ContinentCompareField::SQUARE);
+				});
+			break;
+		case 3:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return b->compareByField(*a, Continent::ContinentCompareField::POPULATION);
+				});
+			break;
+		case 4:
+			sort(continentPointers.begin(), continentPointers.end(), [](const Continent* a, const Continent* b) {
+				return b->compareByField(*a, Continent::ContinentCompareField::NUMBEROFCOUNTRIES);
+				});
+			break;
+		default:
+			break;
+		}
 	}
 }
 

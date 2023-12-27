@@ -253,6 +253,77 @@ string Company::info() const
 		to_string(netProfit) + "; " + dateOfFoundation + "; " + industry + ".";
 }
 
+Company::Company(const Company& other)
+{
+	this->name = other.name;
+	this->citySubjectCountry = other.citySubjectCountry;
+	this->turnoverPerYear = other.turnoverPerYear;
+	this->netProfit = other.netProfit;
+	this->industry = other.industry;
+	this->activity = other.activity;
+}
+
+bool Company::compareByField(const Company& other, CompanyCompareField field) const
+{
+	int number;
+	char delimiter;
+	istringstream thisDate(dateOfFoundation);
+	istringstream otherDate(other.dateOfFoundation);
+	vector<int> thisNumbers;
+	vector<int> otherNumbers;
+	while (thisDate >> number) {
+		thisNumbers.push_back(number);
+		if (!(thisDate >> delimiter))
+			break;
+	}
+	while (otherDate >> number) {
+		otherNumbers.push_back(number);
+		if (!(otherDate >> delimiter))
+			break;
+	}
+	switch (field)
+	{
+	case CompanyCompareField::NAME:
+		return this->name < other.name;
+	case CompanyCompareField::ADDRESS:
+		return this->citySubjectCountry < other.citySubjectCountry;
+	case CompanyCompareField::TURNOVER:
+		return this->turnoverPerYear < other.turnoverPerYear;
+	case CompanyCompareField::NETPROFIT:
+		return this->netProfit < other.netProfit;
+	case CompanyCompareField::DATE:
+		if (thisNumbers.at(2) != otherNumbers.at(2))
+			return thisNumbers.at(2) < otherNumbers.at(2);
+		else if (thisNumbers.at(1) != otherNumbers.at(1))
+			return thisNumbers.at(1) < otherNumbers.at(1);
+		else
+			return thisNumbers.at(0) < otherNumbers.at(0);
+	case CompanyCompareField::INDUSTRY:
+		return this->industry < other.industry;
+	default:
+		return false;
+	}
+}
+
+int Company::selectSortingCriteria()
+{
+	cout << "Выберете критерий сортировки списка компаний: " << endl;
+	int number;
+	cout << "1.Название" << endl;
+	cout << "2.Адрес" << endl;
+	cout << "3.Оборот за год" << endl;
+	cout << "4.Прибыль" << endl;
+	cout << "5.Дата основания" << endl;
+	cout << "6.Отрасль" << endl;
+	do {
+		cout << "Введите номер: ";
+		cin >> number;
+		if ((number < 1) || (number > 6))
+			cout << "Критерия с данным номером нет" << endl;
+	} while ((number < 1) || (number > 6));
+	return number;
+}
+
 
 
 

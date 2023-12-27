@@ -32,12 +32,9 @@ void Country::setExpenses(unsigned long expenses)
 	budgetDeficitOrSurplus = income - expenses;
 }
 
-void Country::setListOfSubjects(Subject subjects[])
+void Country::setListOfSubjects(vector<Subject> subjects)
 {
-	for (int i = 0; i < MAXSUBJECTS; i++)
-	{
-		listOfSubjects[i] = subjects[i];
-	}
+	listOfSubjects = subjects;
 }
 
 
@@ -66,7 +63,7 @@ long Country::getBudgetDeficitOrSurplus()
 	return budgetDeficitOrSurplus;
 }
 
-Subject* Country::getListOfSubjects()
+vector<Subject> &Country::getListOfSubjects()
 {
 	return listOfSubjects;
 }
@@ -90,7 +87,7 @@ Country::Country(string name) : AbstractElement(name)
 }
 
 
-Country::Country(string name, int number, long population, int square, unsigned long income, unsigned long expenses, Subject subjects[])
+Country::Country(string name, int number, long population, int square, unsigned long income, unsigned long expenses, vector<Subject> subjects)
 {
 	if (name.empty())
 		throw invalid_argument("Строка не может быть пустой!");
@@ -111,10 +108,7 @@ Country::Country(string name, int number, long population, int square, unsigned 
 		throw invalid_argument("Значение не может быть отрицательным!");
 	this->expenses = expenses;
 	budgetDeficitOrSurplus = income - expenses;
-	for (int i = 0; i < MAXSUBJECTS; i++)
-	{
-		listOfSubjects[i] = subjects[i];
-	}
+	listOfSubjects = subjects;
 	this->netProfitFromCompanies = calculatingProfitsFromCompanies(0);
 }
 
@@ -125,15 +119,15 @@ int Country::calculatingProfitsFromCompanies(int number)
 {
 	int i, j, k;
 	int numberOfProfit = 0;
-	City* city;
-	Company** company;
-	for (i = 0; i < MAXSUBJECTS; i++) {
-		city = listOfSubjects[i].getListOfCities();
-		for (j = 0; j < MAXCITIES; j++) {
-			company = city[j].getListOfCompanies();
-			k = 0;
-			while(company[k] != nullptr){
-				numberOfProfit += company[k]->getNetProfit();
+	vector<City> cities;
+	vector<Company*> companies;
+	for (i = 0; i < listOfSubjects.size(); i++) {
+		cities = listOfSubjects.at(i).getListOfCities();
+		for (j = 0; j < cities.size(); j++) {
+			companies = cities.at(j).getListOfCompanies();
+			k = 0;   
+			while(k < companies.size()){
+				numberOfProfit += companies.at(k)->getNetProfit();
 				k++;
 			}
 		}
@@ -183,12 +177,12 @@ void Country::outputCountryToConsole(int number)
 	cout << setw(14) << left << income << " * ";
 	cout << setw(15) << left << expenses << " * ";
 	cout << setw(24) << left << budgetDeficitOrSurplus << " * ";
-	cout << setw(25) << left << listOfSubjects[0].getName() << " *" << endl;
+	cout << setw(25) << left << listOfSubjects.at(0).getName() << " *" << endl;
 
 	i = 1;
-	while ((!listOfSubjects[i].getName().empty()) && (i < MAXSUBJECTS)) {
+	while (i < listOfSubjects.size()) {
 		cout << "*       *                    *                      *                *           *                     *                *                 *                          * ";
-		cout << setw(25) << left << listOfSubjects[i].getName() << " *" << endl;
+		cout << setw(25) << left << listOfSubjects.at(i).getName() << " *" << endl;
 		i++;
 	}
 	cout << "**************************************************************************************************************************************************************************************************" << endl;
@@ -204,11 +198,11 @@ ostream& operator<<(ostream& os, const Country& country) {
 	os << setw(14) << left << country.income << " * ";
 	os << setw(15) << left << country.expenses << " * ";
 	os << setw(24) << left << country.budgetDeficitOrSurplus << " * ";
-	os << setw(25) << left << country.listOfSubjects[0].getName() << " *" << endl;
+	os << setw(25) << left << country.listOfSubjects.at(0).getName() << " *" << endl;
 	i = 1;
-	while ((!country.listOfSubjects[i].getName().empty()) && (i < MAXSUBJECTS)) {
+	while (i < country.listOfSubjects.size()) {
 		os << "*       *                    *                      *                *           *                     *                *                 *                          * ";
-		os << setw(25) << left << country.listOfSubjects[i].getName() << " *" << endl;
+		os << setw(25) << left << country.listOfSubjects.at(i).getName() << " *" << endl;
 		i++;
 	}
 	os << "**************************************************************************************************************************************************************************************************" << endl;
@@ -221,9 +215,9 @@ Subject& Country::choosingSubject()
 	char character;
 	listOfSubjects[0].subjectTableHeader();
 	i = 0;
-	while (!listOfSubjects[i].getName().empty()) {
+	while (i < listOfSubjects.size()) {
 		cout << "* " << setw(5) << left << i + 1 << " * ";
-		cout << listOfSubjects[i];
+		cout << listOfSubjects.at(i);
 		i++;
 	}
 	n = i + 1;
@@ -330,4 +324,134 @@ string Country::info() const
 {
 	return "Страна: " + name + "; "  + to_string(population) + "; " + to_string(square) +
 		"; " + to_string(numberOfSubjects) + "; " + to_string(netProfitFromCompanies) + "; " + to_string(income) + "; " + to_string(expenses) + "; " + to_string(budgetDeficitOrSurplus) + ".";
+}
+
+Country::Country(const Country& other) : listOfSubjects(other.listOfSubjects)
+{
+	this->name = other.name;
+	this->square = other.square;
+	this->population = other.population;
+	this->numberOfSubjects = other.numberOfSubjects;
+	this->netProfitFromCompanies = other.netProfitFromCompanies;
+	this->income = other.income;
+	this->expenses = other.expenses;
+	this->budgetDeficitOrSurplus = other.budgetDeficitOrSurplus;
+}
+
+bool Country::compareByField(const Country& other, CountryCompareField field) const
+{
+	switch (field)
+	{
+	case CountryCompareField::NAME:
+		return name < other.name;
+	case CountryCompareField::POPULATION:
+		return population < other.population;
+	case CountryCompareField::SQUARE:
+		return square < other.square;
+	case CountryCompareField::NUMBEROFSUBJECTS:
+		return this->numberOfSubjects < other.numberOfSubjects;
+	case CountryCompareField::NETPROFIT:
+		return this->netProfitFromCompanies < other.netProfitFromCompanies;
+	case CountryCompareField::INCOME:
+		return this->income < other.income;
+	case CountryCompareField::EXPENSES:
+		return this->expenses < other.expenses;
+	case CountryCompareField::BUDGET:
+		return this->budgetDeficitOrSurplus < other.expenses;
+	default:
+		return false;
+	}
+}
+
+int Country::selectSortingCriteria()
+{
+	cout << "Выберете критерий сортировки списка стран: ";
+	int number;
+	cout << "1.Название" << endl;
+	cout << "2.Площадь" << endl;
+	cout << "3.Население" << endl;
+	cout << "4.Количество субъектов" << endl;
+	cout << "5.Прибыль от компаний" << endl;
+	cout << "6.Доход" << endl;
+	cout << "7.Расхооды" << endl;
+	cout << "8.Профицит\\дефицит" << endl;
+	do {
+		cout << "Введите номер: " << endl;
+		cin >> number;
+		if ((number < 1) || (number > 8))
+			cout << "Критерия с данным номером нет" << endl;
+	} while ((number < 1) || (number > 8));
+	return number;
+}
+
+void Country::sortSubjects(int criteria)
+{
+	vector<Subject*> subjectPointers;
+	for (Subject& subject : listOfSubjects) {
+		subjectPointers.push_back(&subject);
+	}
+	int number;
+	cout << endl << "Спрособ упорядочивания" << endl;
+	cout << "1.По возрастанию" << endl;
+	cout << "2.По убыванию" << endl;
+	do {
+		cout << "Введите номер: ";
+		cin >> number;
+		if ((number < 1) || (number > 2))
+			cout << "Введите 1 или 2" << endl;
+	} while (number < 1 || (number > 2));
+	if (number == 1) {
+		switch (criteria)
+		{
+		case 1:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return a->compareByField(*b, Subject::SubjectCompareField::NAME);
+				});
+			break;
+		case 2:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return a->compareByField(*b, Subject::SubjectCompareField::SQUARE);
+				});
+			break;
+		case 3:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return a->compareByField(*b, Subject::SubjectCompareField::POPULATION);
+				});
+			break;
+		case 4:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return a->compareByField(*b, Subject::SubjectCompareField::NUMBEROFCITIES);
+				});
+			break;
+		default:
+			break;
+		}
+	}
+	else {
+		switch (criteria)
+		{
+		case 1:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return b->compareByField(*a, Subject::SubjectCompareField::NAME);
+				});
+			break;
+		case 2:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return b->compareByField(*a, Subject::SubjectCompareField::SQUARE);
+				});
+			break;
+		case 3:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return b->compareByField(*a, Subject::SubjectCompareField::POPULATION);
+				});
+			break;
+		case 4:
+			sort(subjectPointers.begin(), subjectPointers.end(), [](const Subject* a, const Subject* b) {
+				return b->compareByField(*a, Subject::SubjectCompareField::NUMBEROFCITIES);
+				});
+			break;
+		default:
+			break;
+		}
+	}
 }

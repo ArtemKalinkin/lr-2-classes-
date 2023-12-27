@@ -10,16 +10,22 @@ class Continent : public AbstractElement
 {
 private:
     int numberOfCountries;
-    Country listOfCountries[MAXCOUNTRIES];
+    vector<Country> listOfCountries;
     static unsigned totalContinents;
 public:
+    enum ContinentCompareField {
+        NAME,
+        POPULATION,
+        SQUARE,
+        NUMBEROFCOUNTRIES
+    };
     void setNumberOfCountries(int number);
-    void setListOfCountries(Country countries[]);
+    void setListOfCountries(vector<Country> countries);
     int getNumberOfCountries();
-    Country *getListOfCountries();
+    vector<Country> &getListOfCountries();
     Continent();
     Continent(string name);
-    Continent(string name, int number, long population, int square, Country countries[]);
+    Continent(string name, int number, long population, int square, vector<Country> countries);
     void input(string s) override;
     void static continentTableHeader();
     void outputContinentToConsole(int number);
@@ -28,5 +34,9 @@ public:
     void static incrementTotalContinents();
     void static printTotalContinents();
     string info() const override;
+    Continent(const Continent& other);
+    bool compareByField(const Continent& other, ContinentCompareField field) const;
+    int static selectSortingCriteria();
+    void sortCountries(int criteria);
 };
 

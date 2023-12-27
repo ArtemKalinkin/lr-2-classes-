@@ -7,6 +7,10 @@ private:
 	string status;
 	int numberOfEmployees;
 public:
+	enum class BranchCompareField {
+		STATUS,
+		NUMBEROFEMPLOYEES
+	};
 	Branch();
 	Branch(string name, string address, unsigned long turnover, long profit, string date, string industry, string activity, string status, int numberOfEmployees);
 	void setStatus(string status);
@@ -19,5 +23,8 @@ public:
 	Branch& operator=(const Company& other);
 	virtual void performActivity() const override;
 	string info() const override;
+	Branch(const Branch& other);
+	bool compareByField(const Branch& other, BranchCompareField field) const;
+
 };
 

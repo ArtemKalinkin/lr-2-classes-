@@ -2,6 +2,7 @@
 #include "supportFunction.h"
 
 
+
 class Company
 {
     friend void compareCompanies(Company* listPtrOfCompanies[], int number);
@@ -13,9 +14,16 @@ protected:
     string dateOfFoundation;
     string industry;
     string activity;
-private:
-    static unsigned totalCompanies;
 public:
+    enum class CompanyCompareField {
+        NAME,
+        ADDRESS,
+        TURNOVER,
+        NETPROFIT,
+        DATE,
+        INDUSTRY
+    };
+    static unsigned totalCompanies;
     void setName(string name);
     void setcitySubjectCountry(string address);
     void setTurnoverPerYear(unsigned long turnover);
@@ -42,5 +50,8 @@ public:
     virtual void performActivity() const;
     void callPerformActivity() const;
     virtual string info() const;
+    Company(const Company& other);
+    virtual bool compareByField(const Company& other, CompanyCompareField field) const;
+    int static selectSortingCriteria();
 };
 

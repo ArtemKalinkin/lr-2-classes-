@@ -107,6 +107,31 @@ string Branch::info() const
 		to_string(netProfit) + "; " + dateOfFoundation + "; " + industry + ".";
 }
 
+Branch::Branch(const Branch& other)
+{
+	this->name = other.name;
+	this->citySubjectCountry = other.citySubjectCountry;
+	this->turnoverPerYear = other.turnoverPerYear;
+	this->netProfit = other.netProfit;
+	this->industry = other.industry;
+	this->activity = other.activity;
+	this->status = other.status;
+	this->numberOfEmployees = other.numberOfEmployees;
+}
+
+bool Branch::compareByField(const Branch& other, BranchCompareField field) const
+{
+	switch (field)
+	{
+	case Branch::BranchCompareField::STATUS:
+		return this->status < other.status;
+	case Branch::BranchCompareField::NUMBEROFEMPLOYEES:
+		return this->numberOfEmployees < other.numberOfEmployees;
+	default:
+		return Company::compareByField(other, static_cast<Company::CompanyCompareField>(field));
+	}
+}
+
 ostream& operator<<(ostream& os, const Branch& branch)
 {
 	os << setw(60) << left << branch.name + " - " + branch.status + "филиал. Кол-во сотрудников: " + to_string(branch.numberOfEmployees) << " * ";
@@ -115,6 +140,6 @@ ostream& operator<<(ostream& os, const Branch& branch)
 	os << setw(13) << left << branch.netProfit << " * ";
 	os << setw(32) << left << branch.industry << " * ";
 	os << setw(14) << left << branch.dateOfFoundation << " *" << endl;
-	os << "*****************************************************************************************************************************************************************************" << endl;
+	os << "******************************************************************************************************************************************************************************************************************" << endl;
 	return os;
 }

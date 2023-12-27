@@ -8,6 +8,9 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <vector>
+#include <sstream>
+#include <algorithm>
 
 using namespace std;
 

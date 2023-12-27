@@ -13,23 +13,33 @@ private:
     unsigned long income;
     unsigned long expenses;
     long budgetDeficitOrSurplus;
-    Subject listOfSubjects[MAXSUBJECTS];
+    vector<Subject> listOfSubjects;
     static unsigned totalCountries;
 public:
+    enum class CountryCompareField{
+        NAME,
+        POPULATION,
+        SQUARE,
+        NUMBEROFSUBJECTS,
+        NETPROFIT,
+        INCOME,
+        EXPENSES,
+        BUDGET
+    };
     void setNumberOfSubjects(int number);
     void setNetProfitCountryFromCompanies(unsigned long profit);
     void setIncome(unsigned long income);
     void setExpenses(unsigned long expenses);
-    void setListOfSubjects(Subject subjects[]);
+    void setListOfSubjects(vector<Subject> subjects);
     int getNumberOfSubjects();
     unsigned long getNetProfitCountryFromCompanies();
     unsigned long getIncome();
     unsigned long getExpenses();
     long getBudgetDeficitOrSurplus();
-    Subject *getListOfSubjects();
+    vector<Subject> &getListOfSubjects();
     Country();
     Country(string name);
-    Country(string name, int number, long population, int square, unsigned long income, unsigned long expenses, Subject subjects[]);
+    Country(string name, int number, long population, int square, unsigned long income, unsigned long expenses, vector<Subject> subjects);
     void input(string s) override;
     void static countryTableHeader();
     void outputCountryToConsole(int number);
@@ -40,5 +50,9 @@ public:
     void static incrementTotalCountries();
     void static printTotalCountries();
     string info() const override;
+    Country(const Country& other);
+    bool compareByField(const Country& other, CountryCompareField field) const;
+    int static selectSortingCriteria();
+    void sortSubjects(int criteria);
 };
 

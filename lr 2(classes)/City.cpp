@@ -10,10 +10,9 @@ void City::setNumberOfCompanies(int number)
 	numberOfCompanies = number;
 }
 
-void City::setListOfCompanies(Company *companies[])
+void City::setListOfCompanies(vector<Company*> companies)
 {
-	for (int i = 0; i < MAXCOMPANIES; i++)
-		listOfCompanies[i] = companies[i];
+	listOfCompanies = companies;
 }
 
 
@@ -22,7 +21,7 @@ int City::getNumberOfCompanies()
 	return numberOfCompanies;
 }
 
-Company** City::getListOfCompanies()
+vector<Company*> &City::getListOfCompanies()
 {
 	return listOfCompanies;
 }
@@ -37,13 +36,12 @@ City::City(string name) : AbstractElement(name)
 	numberOfCompanies = 0;
 }
 
-City::City(string name, long population, int square, int number, Company *companies[]) : AbstractElement (name, population, square)
+City::City(string name, long population, int square, int number, vector<Company*> companies) : AbstractElement (name, population, square)
 {
 	if (number < 0)
 		throw invalid_argument("Значение не может быть отрицательным!");
 	numberOfCompanies = number;
-	for (int i = 0; i < MAXCOMPANIES; i++)
-		listOfCompanies[i] = companies[i];
+	listOfCompanies = companies;
 }
 
 
@@ -52,7 +50,7 @@ void City::input(string s)
 {
 	cout << "\nВВОД ГОРОДА\n" << endl;
 	AbstractElement::input("города");
-	cout << "Введите количество предприятий в городе:" << endl;
+	cout << "Введите количество компаний в городе:" << endl;
 	while (scanf("%d", &numberOfCompanies) != 1) {
 		while (getchar() != '\n');
 		cout << "\nОшибка ввода!\nВведите количество компаний в городе:\n";
@@ -63,7 +61,7 @@ void City::input(string s)
 void City::cityTableHeader()
 {
 	cout << "***************************************************************************************************************************" << endl;
-	cout << "* Номер *       Город        * Количество предприятий * Площадь города * Население *      Список компаний и филиалов      *" << endl;
+	cout << "* Номер *       Город        *  Количество компаний   * Площадь города * Население *      Список компаний и филиалов      *" << endl;
 	cout << "***************************************************************************************************************************" << endl;
 }
 
@@ -75,11 +73,11 @@ void City::outputCityToConsole(int number)
 	cout << setw(22) << left << numberOfCompanies << " * ";
 	cout << setw(14) << left << square << " * ";
 	cout << setw(9) << left << population << " * ";
-	cout << setw(36) << left << listOfCompanies[0]->getName() << " *" << endl;
+	cout << setw(36) << left << listOfCompanies.at(0)->getName() << " *" << endl;
 	i = 1;
-	while ((listOfCompanies[i] != nullptr) && (i < MAXCOMPANIES)) {
+	while (i < listOfCompanies.size()) {
 		cout << "*       *                    *                        *           * ";
-		cout << setw(36) << left << (*listOfCompanies[i]).getName() << " *" << endl;
+		cout << setw(36) << left << listOfCompanies.at(i)->getName() << " *" << endl;
 		i++;
 	}
 	cout << "***************************************************************************************************************************" << endl;
@@ -91,16 +89,16 @@ ostream& operator<<(ostream& os, const City& city) {
 	os << setw(22) << left << city.numberOfCompanies << " * ";
 	os << setw(14) << left << city.square << " * ";
 	os << setw(9) << left << city.population << " * ";
-	os << setw(36) << left << city.listOfCompanies[0]->getName() << " *" << endl;
+	os << setw(36) << left << city.listOfCompanies.at(0)->getName() << " *" << endl;
 	i = 1;
-	while ((city.listOfCompanies[i] != nullptr) && (i < MAXCOMPANIES)) {
-		os << "*       *                    *                        *           * ";
+	while (i < city.listOfCompanies.size()) {
+		os << "*       *                    *                        *                *           * ";
 		try {
-			Branch* branchPtr = dynamic_cast<Branch*>(city.listOfCompanies[i]);
-			os << setw(36) << left << city.listOfCompanies[i]->getName() + " - филиал" << " *" << endl;
+			Branch* branchPtr = dynamic_cast<Branch*>(city.listOfCompanies.at(i));
+			os << setw(36) << left << city.listOfCompanies.at(i)->getName() + " - филиал" << " *" << endl;
 		}
 		catch (const bad_cast& e){
-			os << setw(36) << left << city.listOfCompanies[i]->getName() << " *" << endl;
+			os << setw(36) << left << city.listOfCompanies.at(i)->getName() << " *" << endl;
 		}
 		i++;
 	}
@@ -121,38 +119,26 @@ void City::printTotalCities()
 
 void City::removeCompany(Company company)
 {
-	int i = 0;
-	while ((!listOfCompanies[i]->getName().empty()) && (i < MAXCOMPANIES)) {
-		if (listOfCompanies[i]->getName() == company.getName())
+	vector<Company*>::iterator it;
+	for(it = listOfCompanies.begin(); it != listOfCompanies.end(); ++it){
+		if ((*it)->getName() == company.getName()) {
+			delete* it;
 			break;
-		i++;
-	}
-	while ((!listOfCompanies[i]->getName().empty()) && (i < MAXCOMPANIES)) {
-		if (i != MAXCOMPANIES - 1)
-			listOfCompanies[i] = listOfCompanies[i + 1];
-		else {
-			listOfCompanies[i]->setName("");
-			listOfCompanies[i]->setcitySubjectCountry("");
-			listOfCompanies[i]->setTurnoverPerYear(0);
-			listOfCompanies[i]->setNetProfit(0);
-			listOfCompanies[i]->setDateOfFoundation("");
-			listOfCompanies[i]->setIndustry("");
 		}
+	}
 
+	if (it != listOfCompanies.end()) {
+		listOfCompanies.erase(it);
 	}
 }
 
 
 City City::operator++(int)
 {
-	int i;
 	City oldCity = *this;
-	Company company;
-	company.inputCompanyFromConsole(0);
-	i = 0;
-	while ((!listOfCompanies[i]->getName().empty()) && (i < MAXCOMPANIES))
-		i++;
-	listOfCompanies[i] = &company;
+	Company *company = new Company();
+	company->inputCompanyFromConsole(0);
+	listOfCompanies.push_back(company);
 	Company::incrementTotalCompanies();
 	return oldCity;
 }
@@ -160,12 +146,9 @@ City City::operator++(int)
 City& City::operator++()
 {
 	int i;
-	Company company;
-	company.inputCompanyFromConsole(0);
-	i = 0;
-	while ((!listOfCompanies[i]->getName().empty()) && (i < MAXCOMPANIES))
-		i++;
-	listOfCompanies[i] = &company;
+	Company *company = new Company();
+	company->inputCompanyFromConsole(0);
+	listOfCompanies.push_back(company);
 	Company::incrementTotalCompanies();
 	return *this;
 }
@@ -174,5 +157,135 @@ string City::info() const
 {
 	return "Город: " + name + "; " + to_string(population) + "; " + to_string(square) +
 		"; " + to_string(numberOfCompanies) + ".";
+}
+
+City::City(const City& other) : listOfCompanies(other.listOfCompanies)
+{
+	this->name = other.name;
+	this->square = other.square;
+	this->population = other.population;
+	this->numberOfCompanies = other.numberOfCompanies;
+}
+
+bool City::compareByField(const City& other, CityCompareField field) const
+{
+	switch (field)
+	{
+	case CityCompareField::NAME:
+		return name < other.name;
+	case CityCompareField::POPULATION:
+		return population < other.population;
+	case CityCompareField::SQUARE:
+		return square < other.square;
+	case CityCompareField::NUMBEROFCOMPANIES:
+		return this->numberOfCompanies < other.numberOfCompanies;
+	default:
+		return false;
+	}
+}
+
+int City::selectSortingCriteria()
+{
+	cout << "Выберете критерий сортировки списка городов: " << endl;
+	int number;
+	cout << "1.Название" << endl;
+	cout << "2.Площадь" << endl;
+	cout << "3.Население" << endl;
+	cout << "4.Количество компаний" << endl;
+	do {
+		cout << "Введите номер: ";
+		cin >> number;
+		if ((number < 1) || (number > 4))
+			cout << "Критерия с данным номером нет" << endl;
+	} while ((number < 1) || (number > 4));
+	return number;
+}
+
+void City::sortCompanies(int criteria)
+{
+	int number;
+	cout << endl << "Спрособ упорядочивания" << endl;
+	cout << "1.По возрастанию" << endl;
+	cout << "2.По убыванию" << endl;
+	do {
+		cout << "Введите номер: ";
+		cin >> number;
+		if ((number < 1) || (number > 2))
+			cout << "Введите 1 или 2" << endl;
+	} while (number < 1 || (number > 2));
+	if (number == 1) {
+		switch (criteria)
+		{
+		case 1:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return a->compareByField(*b, Company::CompanyCompareField::NAME);
+				});
+			break;
+		case 2:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return a->compareByField(*b, Company::CompanyCompareField::ADDRESS);
+				});
+			break;
+		case 3:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return a->compareByField(*b, Company::CompanyCompareField::NETPROFIT);
+				});
+			break;
+		case 4:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return a->compareByField(*b, Company::CompanyCompareField::NETPROFIT);
+				});
+			break;
+		case 5:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return a->compareByField(*b, Company::CompanyCompareField::DATE);
+				});
+			break;
+		case 6:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return a->compareByField(*b, Company::CompanyCompareField::INDUSTRY);
+				});
+			break;
+		default:
+			break;
+		}
+	}
+	else {
+		switch (criteria)
+		{
+		case 1:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return b->compareByField(*a, Company::CompanyCompareField::NAME);
+				});
+			break;
+		case 2:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return b->compareByField(*a, Company::CompanyCompareField::ADDRESS);
+				});
+			break;
+		case 3:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return b->compareByField(*a, Company::CompanyCompareField::TURNOVER);
+				});
+			break;
+		case 4:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return b->compareByField(*a, Company::CompanyCompareField::NETPROFIT);
+				});
+			break;
+		case 5:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return b->compareByField(*a, Company::CompanyCompareField::DATE);
+				});
+			break;
+		case 6:
+			sort(listOfCompanies.begin(), listOfCompanies.end(), [](const Company* a, const Company* b) {
+				return b->compareByField(*a, Company::CompanyCompareField::INDUSTRY);
+				});
+			break;
+		default:
+			break;
+		}
+	}
 }
 
