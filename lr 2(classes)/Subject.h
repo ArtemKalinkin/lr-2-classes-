@@ -35,7 +35,7 @@ public:
     string info() const override;
     Subject(const Subject& other);
     bool compareByField(const Subject& other, SubjectCompareField field) const;
-    int static selectSortingCriteria();
+    int static selectCriteria(string s);
     void sortCities(int criteria);
 };
 

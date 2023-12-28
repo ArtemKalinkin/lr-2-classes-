@@ -30,6 +30,12 @@ City *cityForInfoActivityOfCompanies(vector<Continent> &continents);
 void searchSomethingWithSameName(vector<Continent> listOfContinents);
 void sortAnyList(vector<Continent>& continents);
 void sortContinents(vector<Continent>& continents, int criteria);
+void findAnyElement(vector<Continent>& continents);
+void findContinent(vector<Continent>& continents);
+void findCountry(vector<Continent>& continents);
+void findSubject(vector<Continent>& continents);
+void findCity(vector<Continent>& continents);
+void findCompanyOrBranch(vector<Continent>& continents);
 
 
 int main()
@@ -50,6 +56,7 @@ int main()
 	number = menuOutput();
 	outputStm(listOfContinents, number);
 	sortAnyList(listOfContinents);
+	findAnyElement(listOfContinents);
 	cout << "\n\n\n\nСРАВНЕНИЕ ДВУХ СТРАН\n" << endl;
 	continent = choosingContinent(listOfContinents);
 	countries = continent.getListOfCountries();
@@ -634,7 +641,14 @@ void sortAnyList(vector<Continent>& continents)
 	switch (number)
 	{
 	case 1:
-		criteria = Continent::selectSortingCriteria();
+		criteria = Continent::selectCriteria("сортировки списка");
+		i = 0;
+		Continent::continentTableHeader();
+		while (i < continents.size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << continents.at(i);
+			i++;
+		}
 		sortContinents(continents, criteria);
 		cout << endl << "Отсортированный список континентов: " << endl << endl;
 		i = 0;
@@ -647,7 +661,14 @@ void sortAnyList(vector<Continent>& continents)
 		break;
 	case 2:
 		continent = &choosingContinent(continents);
-		criteria = Country::selectSortingCriteria();
+		i = 0;
+		Country::countryTableHeader();
+		while (i < continent->getListOfCountries().size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << continent->getListOfCountries().at(i);
+			i++;
+		}
+		criteria = Country::selectCriteria("сортировки списка");
 		continent->sortCountries(criteria);
 		cout << endl << "Отсортированный список стран: " << endl << endl;
 		i = 0;
@@ -661,7 +682,14 @@ void sortAnyList(vector<Continent>& continents)
 	case 3:
 		continent = &choosingContinent(continents);
 		country = &continent->choosingCountry();
-		criteria = Subject::selectSortingCriteria();
+		i = 0;
+		Subject::subjectTableHeader();
+		while (i < country->getListOfSubjects().size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << country->getListOfSubjects().at(i);
+			i++;
+		}
+		criteria = Subject::selectCriteria("сортировки списка");
 		country->sortSubjects(criteria);
 		cout << endl << "Отсортированный список субъектов: " << endl << endl;
 		i = 0;
@@ -676,7 +704,14 @@ void sortAnyList(vector<Continent>& continents)
 		continent = &choosingContinent(continents);
 		country = &continent->choosingCountry();
 		subject = &country->choosingSubject();
-		criteria = City::selectSortingCriteria();
+		i = 0;
+		City::cityTableHeader();
+		while (i < subject->getListOfCities().size()) {
+			cout << "* " << setw(5) << left << i + 1 << " * ";
+			cout << subject->getListOfCities().at(i);
+			i++;
+		}
+		criteria = City::selectCriteria("сортировки списка");
 		subject->sortCities(criteria);
 		cout << endl << "Отсортированный список городов: " << endl << endl;
 		i = 0;
@@ -692,7 +727,13 @@ void sortAnyList(vector<Continent>& continents)
 		country = &continent->choosingCountry();
 		subject = &country->choosingSubject();
 		city = &subject->choosingCity();
-		criteria = Company::selectSortingCriteria();
+		i = 0;
+		Company::companyTableHeader();
+		while (i < city->getListOfCompanies().size()) {
+			city->getListOfCompanies().at(i)->outputCompanyToConsole(i);
+			i++;
+		}
+		criteria = Company::selectCriteria("сортировки списка");
 		city->sortCompanies(criteria);
 		cout << endl << "Отсортированный список компаний: " << endl << endl;
 		i = 0;
@@ -715,15 +756,15 @@ void sortContinents(vector<Continent>& continents, int criteria)
 	}
 	int number;
 	cout << endl << "Спрособ упорядочивания" << endl;
-	cout << "1.По возрастанию" << endl;
-	cout << "2.По убыванию" << endl;
+	cout << "1.По убыванию" << endl;
+	cout << "2.По возрастанию" << endl;
 	do {
 		cout << "Введите номер";
 		cin >> number;
 		if ((number < 1) || (number > 2))
 			cout << "Введите 1 или 2" << endl;
 	} while (number < 1 || (number > 2));
-	if (number == 1) {
+	if (((number == 1) && (criteria == 1)) || ((number == 2) && (criteria != 1))) {
 		switch (criteria)
 		{
 		case 1:
@@ -778,6 +819,201 @@ void sortContinents(vector<Continent>& continents, int criteria)
 		}
 	}
 }
+
+void findAnyElement(vector<Continent>& continents)
+{
+	int number;
+	cout << endl << endl << "ПОИСК ЭЛЕМЕНТА" << endl << endl;
+	cout << "1. Континент" << endl;
+	cout << "2. Страна" << endl;
+	cout << "3. Субъект" << endl;
+	cout << "4. Город" << endl;
+	cout << "5. Компаний" << endl;
+	do {
+		cout << endl << "Введите номер того, что хотите найти: ";
+		cin >> number;
+		if ((number < 1) || (number > 5))
+			cout << "Действия под данным номером нет" << endl;
+	} while ((number < 1) || (number > 5));
+	while (getchar() != '\n');
+	switch (number)
+	{
+	case 1:
+		findContinent(continents);
+		break;
+	case 2:
+		findCountry(continents);
+		break;
+	case 3:
+		findSubject(continents);
+		break;
+	case 4:
+		findCity(continents);
+		break;
+	case 5:
+		findCompanyOrBranch(continents);
+		break;
+	default:
+		break;
+	}
+}
+
+void findContinent(vector<Continent>& continents)
+{
+	string targetName;
+	vector<Continent*> continentPointers;
+	for (Continent& continent : continents) {
+		continentPointers.push_back(&continent);
+	}
+	cout << endl << endl << "ПОИСК КОНТИНЕНТА ПО НАЗВАНИЮ" << endl << endl;
+	cout << "Введите название: ";
+	cin >> targetName;
+	vector<Continent*>::iterator it;
+	it = find_if(continentPointers.begin(), continentPointers.end(), [targetName](const Continent* continent) {
+		return continent->getName() == targetName;
+		});
+	if (it != continentPointers.end()) {
+		cout << endl << "Континент найден: " << endl << endl;
+		Continent::continentTableHeader();
+		cout << "* " << setw(5) << left << 1 << " * ";
+		cout << (*it);
+	}
+	else {
+		cout << "Континент не найден." << endl;
+	}
+}
+
+void findCountry(vector<Continent>& continents)
+{
+	string targetName;
+	bool flag = false;
+	cout << endl << endl << "ПОИСК СТРАНЫ ПО НАЗВАНИЮ" << endl << endl;
+	cout << "Введите название: ";
+	cin >> targetName;
+	vector<Country*> countryPointers;
+	for (Continent& continent : continents) {
+		for (Country& country : continent.getListOfCountries()) {
+			countryPointers.push_back(&country);
+		}
+		auto it = find_if(countryPointers.begin(), countryPointers.end(), [targetName](const Country* country) {
+			return country->getName() == targetName;
+			});
+
+		if (it != countryPointers.end()) {
+			cout << endl << "Страна найдена: " << endl << endl;
+			Country::countryTableHeader();
+			cout << "* " << setw(5) << left << 1 << " * ";
+			cout << (*it);
+			flag = true;
+			break;
+		}
+	}
+	if (!flag)
+		cout << "Страна не найдена." << endl;
+}
+
+void findSubject(vector<Continent>& continents)
+{
+	string targetName;
+	bool flag = false;
+	cout << endl << endl << "ПОИСК СУБЪЕКТА ПО НАЗВАНИЮ" << endl << endl;
+	cout << "Введите название: ";
+	cin >> targetName;
+	vector<Subject*> subjectPointers;
+	for (Continent& continent : continents) {
+		for (Country& country : continent.getListOfCountries()) {
+			for (Subject& subject : country.getListOfSubjects())
+				subjectPointers.push_back(&subject);
+			auto it = find_if(subjectPointers.begin(), subjectPointers.end(), [targetName](const Subject* subject) {
+				return subject->getName() == targetName;
+				});
+
+			if (it != subjectPointers.end()) {
+				cout << endl << "Субъект найден: " << endl << endl;
+				Subject::subjectTableHeader();
+				cout << "* " << setw(5) << left << 1 << " * ";
+				cout << (*it);
+				flag = true;
+				break;
+			}
+		}
+	}
+	if (!flag)
+		cout << "Субъект не найден." << endl;
+}
+
+void findCity(vector<Continent>& continents)
+{
+	string targetName;
+	bool flag = false;
+	cout << endl << endl << "ПОИСК ГОРОДА ПО НАЗВАНИЮ" << endl << endl;
+	cout << endl <<"Введите название: ";
+	cin >> targetName;
+	vector<City*> cityPointers;
+	for (Continent& continent : continents) {
+		for (Country& country : continent.getListOfCountries()) {
+			for (Subject& subject : country.getListOfSubjects()) {
+				for (City& city : subject.getListOfCities())
+					cityPointers.push_back(&city);
+				auto it = find_if(cityPointers.begin(), cityPointers.end(), [targetName](const City* city) {
+					return city->getName() == targetName;
+					});
+
+				if (it != cityPointers.end()) {
+					cout << endl << "Город найден: " << endl << endl;
+					City::cityTableHeader();
+					cout << "* " << setw(5) << left << 1 << " * ";
+					cout << (*it);
+					flag = true;
+					break;
+				}
+			}
+		}
+	}
+	if (!flag)
+		cout << "Город не найден." << endl;
+}
+
+void findCompanyOrBranch(vector<Continent>& continents)
+{
+	int i;
+	string targetName;
+	bool flag = false;
+	cout << endl << endl << "ПОИСК КОМПАНИИ ИЛИ ФИЛИАЛА ПО НАЗВАНИЮ" << endl << endl;
+	cout << "Введите название: ";
+	cin >> targetName;
+	vector<Company*> companyPointers;
+	for (Continent& continent : continents) {
+		for (Country& country : continent.getListOfCountries()) {
+			for (Subject& subject : country.getListOfSubjects()) {
+				for (City& city : subject.getListOfCities()) {
+					for (Company* company : city.getListOfCompanies())
+						companyPointers.push_back(company);
+					i = 0;
+					auto it = find_if(companyPointers.begin(), companyPointers.end(), [targetName](const Company* company) -> bool {
+						return company->getName().find(targetName) != std::string::npos;
+						});
+					while (it != companyPointers.end()) {
+						if (!flag) {
+							cout << endl << "Компании найдены: " << endl << endl;
+							Company::companyTableHeader();
+						}
+						(*it)->outputCompanyToConsole(i);
+						flag = true;
+
+						it = find_if(++it, companyPointers.end(), [targetName](const Company* company) -> bool {
+							return company->getName().find(targetName) != string::npos;
+							});
+						++i;
+					}
+				}
+			}
+		}
+	}
+	if (!flag)
+		cout << "Компания не найдена." << endl;
+}
+
 
 
 void compareCompanies(Company* listPtrOfCompanies[], int number) {

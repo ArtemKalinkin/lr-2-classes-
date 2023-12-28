@@ -52,7 +52,7 @@ public:
     string info() const override;
     Country(const Country& other);
     bool compareByField(const Country& other, CountryCompareField field) const;
-    int static selectSortingCriteria();
+    int static selectCriteria(string s);
     void sortSubjects(int criteria);
 };
 

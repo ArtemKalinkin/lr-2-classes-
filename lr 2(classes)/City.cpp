@@ -85,6 +85,7 @@ void City::outputCityToConsole(int number)
 
 ostream& operator<<(ostream& os, const City& city) {
 	int i;
+	Branch* branchPtr;
 	os << setw(18) << left << city.name << " * ";
 	os << setw(22) << left << city.numberOfCompanies << " * ";
 	os << setw(14) << left << city.square << " * ";
@@ -93,11 +94,11 @@ ostream& operator<<(ostream& os, const City& city) {
 	i = 1;
 	while (i < city.listOfCompanies.size()) {
 		os << "*       *                    *                        *                *           * ";
-		try {
-			Branch* branchPtr = dynamic_cast<Branch*>(city.listOfCompanies.at(i));
+		branchPtr = dynamic_cast<Branch*>(city.listOfCompanies.at(i));
+		if (branchPtr) {
 			os << setw(36) << left << city.listOfCompanies.at(i)->getName() + " - филиал" << " *" << endl;
 		}
-		catch (const bad_cast& e){
+		else {
 			os << setw(36) << left << city.listOfCompanies.at(i)->getName() << " *" << endl;
 		}
 		i++;
@@ -184,9 +185,9 @@ bool City::compareByField(const City& other, CityCompareField field) const
 	}
 }
 
-int City::selectSortingCriteria()
+int City::selectCriteria(string s)
 {
-	cout << "Выберете критерий сортировки списка городов: " << endl;
+	cout << "Выберете критерий " << s << " городов: " << endl;
 	int number;
 	cout << "1.Название" << endl;
 	cout << "2.Площадь" << endl;
@@ -205,15 +206,15 @@ void City::sortCompanies(int criteria)
 {
 	int number;
 	cout << endl << "Спрособ упорядочивания" << endl;
-	cout << "1.По возрастанию" << endl;
-	cout << "2.По убыванию" << endl;
+	cout << "1.По убыванию" << endl;
+	cout << "2.По возрастанию" << endl;
 	do {
 		cout << "Введите номер: ";
 		cin >> number;
 		if ((number < 1) || (number > 2))
 			cout << "Введите 1 или 2" << endl;
 	} while (number < 1 || (number > 2));
-	if (number == 1) {
+	if (((number == 1) && ((criteria == 1)||(criteria == 6))) || ((number == 2) && (criteria != 1) && (criteria != 6))) {
 		switch (criteria)
 		{
 		case 1:

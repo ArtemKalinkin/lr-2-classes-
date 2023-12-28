@@ -163,9 +163,9 @@ bool Continent::compareByField(const Continent& other, ContinentCompareField fie
 	}
 }
 
-int Continent::selectSortingCriteria()
+int Continent::selectCriteria(string s)
 {
-	cout << "Выберете критерий сортировки списка континентов: " << endl ;
+	cout << "Выберете критерий " << s <<" континентов: " << endl ;
 	int number;
 	cout << "1.Название" << endl;
 	cout << "2.Площадь" << endl;
@@ -188,15 +188,15 @@ void Continent::sortCountries(int criteria)
 	}
 	int number;
 	cout << endl << "Спрособ упорядочивания" << endl;
-	cout << "1.По возрастанию" << endl;
-	cout << "2.По убыванию" << endl;
+	cout << "1.По убыванию" << endl;
+	cout << "2.По возрастанию" << endl;
 	do {
 		cout << "Введите номер: ";
 		cin >> number;
 		if ((number < 1) || (number > 2))
 			cout << "Введите 1 или 2" << endl;
 	} while (number < 1 || (number > 2));
-	if (number == 1) {
+	if (((number == 1) && (criteria == 1)) || ((number == 2) && (criteria != 1))) {
 		switch (criteria)
 		{
 		case 1:

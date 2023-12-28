@@ -363,9 +363,9 @@ bool Country::compareByField(const Country& other, CountryCompareField field) co
 	}
 }
 
-int Country::selectSortingCriteria()
+int Country::selectCriteria(string s)
 {
-	cout << "Выберете критерий сортировки списка стран: ";
+	cout << "Выберете критерий " << s << " стран: ";
 	int number;
 	cout << "1.Название" << endl;
 	cout << "2.Площадь" << endl;
@@ -392,15 +392,15 @@ void Country::sortSubjects(int criteria)
 	}
 	int number;
 	cout << endl << "Спрособ упорядочивания" << endl;
-	cout << "1.По возрастанию" << endl;
-	cout << "2.По убыванию" << endl;
+	cout << "1.По убыванию" << endl;
+	cout << "2.По возрастанию" << endl;
 	do {
 		cout << "Введите номер: ";
 		cin >> number;
 		if ((number < 1) || (number > 2))
 			cout << "Введите 1 или 2" << endl;
 	} while (number < 1 || (number > 2));
-	if (number == 1) {
+	if (((number == 1) && (criteria == 1)) || ((number == 2) && (criteria != 1))) {
 		switch (criteria)
 		{
 		case 1:

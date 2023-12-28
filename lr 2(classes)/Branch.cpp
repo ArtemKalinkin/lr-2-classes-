@@ -58,13 +58,13 @@ void Branch::inputCompanyFromConsole(int mode)
 void Branch::outputCompanyToConsole(int number)
 {
 	cout << "* " << setw(5) << left << number + 1 << " * ";
-	cout << setw(60) << left << name + " - " + status + "филиал. Кол-во сотрудников: " + to_string(numberOfEmployees) << " * ";
+	cout << setw(60) << left << name + " - " + status + " филиал. Кол-во сотрудников: " + to_string(numberOfEmployees) << " * ";
 	cout << setw(47) << left << citySubjectCountry << " * ";
 	cout << setw(17) << left << turnoverPerYear << " * ";
 	cout << setw(13) << left << netProfit << " * ";
 	cout << setw(32) << left << industry << " * ";
 	cout << setw(14) << left << dateOfFoundation << " *" << endl;
-	cout << "*****************************************************************************************************************************************************************************" << endl;
+	cout << "******************************************************************************************************************************************************************************************************************" << endl;
 }
 
 Branch& Branch::operator=(const Company& other)

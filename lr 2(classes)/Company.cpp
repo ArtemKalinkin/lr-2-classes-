@@ -305,9 +305,9 @@ bool Company::compareByField(const Company& other, CompanyCompareField field) co
 	}
 }
 
-int Company::selectSortingCriteria()
+int Company::selectCriteria(string s)
 {
-	cout << "Выберете критерий сортировки списка компаний: " << endl;
+	cout << "Выберете критерий " << s << " компаний: " << endl;
 	int number;
 	cout << "1.Название" << endl;
 	cout << "2.Адрес" << endl;

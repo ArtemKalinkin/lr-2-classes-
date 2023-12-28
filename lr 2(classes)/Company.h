@@ -52,6 +52,6 @@ public:
     virtual string info() const;
     Company(const Company& other);
     virtual bool compareByField(const Company& other, CompanyCompareField field) const;
-    int static selectSortingCriteria();
+    int static selectCriteria(string s);
 };
 

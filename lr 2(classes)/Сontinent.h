@@ -36,7 +36,7 @@ public:
     string info() const override;
     Continent(const Continent& other);
     bool compareByField(const Continent& other, ContinentCompareField field) const;
-    int static selectSortingCriteria();
+    int static selectCriteria(string s);
     void sortCountries(int criteria);
 };
 
